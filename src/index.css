@@ -1,0 +1,129 @@
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap');
+@import "tailwindcss";
+
+/* Drop DreamAvenue font files into /public/fonts/ to activate custom branding font */
+@font-face {
+  font-family: 'Dream Avenue';
+  src: local('Dream Avenue'),
+       url('/fonts/DreamAvenue.woff2') format('woff2'),
+       url('/fonts/DreamAvenue.woff') format('woff'),
+       url('/fonts/DreamAvenue.ttf') format('truetype'),
+       url('/fonts/DreamAvenue.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: optional;
+}
+
+@layer base {
+  body {
+    /* Sans stack for body, keeping clean high-readability flow */
+    font-family: 'Montserrat', sans-serif;
+    background-color: #faf9f7;
+    color: #1a1a1a;
+  }
+}
+
+/* Two distinct font utility classes:
+   - font-heading: luxury display / brand identity — uses Dream Avenue with premium serif fallbacks
+   - font-mono-street: compact monospaced street aesthetic — uses Montserrat with tight tracking */
+.font-heading {
+  font-family: 'Dream Avenue', 'Cormorant Garamond', 'Bodoni Moda', 'Montserrat', serif;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.font-mono-street {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+}
+
+/* Headings default to the premium display stack */
+h1, h2, h3, h4 {
+  font-family: 'Dream Avenue', 'Cormorant Garamond', 'Bodoni Moda', 'Montserrat', serif;
+}
+
+/* FIX 13: Marquee scroll animation for announcement bar on mobile */
+@keyframes marquee {
+  0%   { transform: translateX(100vw); }
+  100% { transform: translateX(-100%); }
+}
+
+.animate-marquee {
+  display: inline-block;
+  animation: marquee 18s linear infinite;
+}
+
+/* Disable marquee on sm+ (tailwind sm breakpoint = 640px) */
+@media (min-width: 640px) {
+  .animate-marquee {
+    animation: none;
+    transform: none;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #f5f4f2;
+}
+::-webkit-scrollbar-thumb {
+  background: #d4d4d8;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1aa;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* FIX 11: Cart item removal animation */
+@keyframes slideOut {
+  from { opacity: 1; transform: translateX(0); max-height: 200px; }
+  to   { opacity: 0; transform: translateX(16px); max-height: 0; padding: 0; }
+}
+
+.animate-slide-out {
+  animation: slideOut 0.25s ease-in forwards;
+  overflow: hidden;
+}
+
+/* Premium shimmers for skeleton cards */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, #f3f2f0 25%, #e4e4e7 50%, #f3f2f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+/* Elegant luxury underline animations for nav links */
+.nav-link-hover {
+  position: relative;
+}
+.nav-link-hover::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1px;
+  bottom: -2px;
+  left: 0;
+  background-color: currentColor;
+  transform-origin: bottom center;
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.nav-link-hover:hover::after {
+  transform: scaleX(1);
+}
