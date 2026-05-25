@@ -1,0 +1,8 @@
+Place your Dream Avenue font files in this folder.
+Supported file names:
+- DreamAvenue.woff2
+- DreamAvenue.woff
+- DreamAvenue.ttf
+- DreamAvenue.otf
+
+Once placed, the website will automatically detect the font and render all headings in the authentic Dream Avenue typeface.
