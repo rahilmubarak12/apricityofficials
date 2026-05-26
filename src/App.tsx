@@ -130,10 +130,12 @@ function mapSubCategory(tags: string[], title: string): Product['subCategory'] {
   const lowerTitle = title.toLowerCase();
   if (lowerTags.some((t) => t.includes('hoodie')) || lowerTitle.includes('hoodie')) return 'hoodie';
   if (lowerTags.some((t) => t.includes('sweatshirt')) || lowerTitle.includes('sweatshirt')) return 'sweatshirt';
+  if (lowerTags.some((t) => t.includes('trouser') || t.includes('short') || t.includes('trouser-short')) || lowerTitle.includes('trouser') || lowerTitle.includes('short')) return 'trouser-short';
   if (lowerTags.some((t) => t.includes('shirt')) || lowerTitle.includes('shirt') || lowerTitle.includes('t-shirt') || lowerTitle.includes('tee')) return 't-shirt';
   if (lowerTags.some((t) => t.includes('jacket')) || lowerTitle.includes('jacket')) return 'jacket';
   return 't-shirt';
 }
+
 
 function mapVariants(variantEdges: any[]): { size: string; stock: number }[] {
   const seen = new Set<string>();
