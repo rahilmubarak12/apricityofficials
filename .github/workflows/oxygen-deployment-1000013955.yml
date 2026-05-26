@@ -43,6 +43,6 @@ jobs:
         id: deploy
         working-directory: hydrogen-store
         run: |
-          npx shopify hydrogen deploy --env Production --auth-bypass-token --token "${{ secrets.OXYGEN_DEPLOYMENT_TOKEN_1000013955 }}"
+          npx shopify hydrogen deploy --auth-bypass-token --token "${{ secrets.OXYGEN_DEPLOYMENT_TOKEN_1000013955 }}"
 
 
