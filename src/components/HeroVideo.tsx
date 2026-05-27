@@ -56,21 +56,46 @@ export const HeroVideo: React.FC<HeroVideoProps> = ({
     // Set muted as a DOM property synchronously — Safari reads this before autoplay check
     el.muted = true;
 
-    const onPlaying = () => setVideoLoaded(true);
-    el.addEventListener('playing', onPlaying);
+    const handlePlaySuccess = () => {
+      setVideoLoaded(true);
+    };
 
-    // Attempt autoplay immediately
-    el.play().catch(() => {
-      // Autoplay blocked (e.g. Safari Low Power Mode) — play on first interaction
-      const playOnInteraction = () => {
-        el.play().then(() => {
-          document.removeEventListener('touchstart', playOnInteraction);
-          document.removeEventListener('click', playOnInteraction);
-        }).catch(() => {});
-      };
-      document.addEventListener('touchstart', playOnInteraction, { passive: true });
-      document.addEventListener('click', playOnInteraction, { passive: true });
-    });
+    // Since this is an SSR app, the browser may have already
+    // started playing the video natively before React finishes loading and mounting.
+    // We check if it's already playing, and listen to multiple events to be safe.
+    if (!el.paused) {
+      handlePlaySuccess();
+    }
+
+    el.addEventListener('playing', handlePlaySuccess);
+    el.addEventListener('play', handlePlaySuccess);
+    
+    // As a fail-safe, check if time is advancing (meaning it is playing)
+    const checkTime = () => {
+      if (el.currentTime > 0 && !el.paused) {
+        handlePlaySuccess();
+        el.removeEventListener('timeupdate', checkTime);
+      }
+    };
+    el.addEventListener('timeupdate', checkTime);
+
+    // Attempt autoplay programmatically only if currently paused
+    if (el.paused) {
+      el.play()
+        .then(handlePlaySuccess)
+        .catch(() => {
+          // Autoplay blocked (e.g. Safari Low Power Mode) — play on first interaction
+          const playOnInteraction = () => {
+            el.play().then(() => {
+              handlePlaySuccess();
+              document.removeEventListener('touchstart', playOnInteraction);
+              document.removeEventListener('click', playOnInteraction);
+            }).catch(() => {});
+          };
+          document.addEventListener('touchstart', playOnInteraction, { passive: true });
+          document.addEventListener('click', playOnInteraction, { passive: true });
+        });
+    }
   }, []);
 
   return (
