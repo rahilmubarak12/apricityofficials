@@ -51,16 +51,51 @@ export const HeroVideo: React.FC<HeroVideoProps> = ({
     if (videoRef.current) {
       const video = videoRef.current;
       
+      // Programmatically configure muted/playsinline to bypass iOS Safari autoplay restrictions
+      video.muted = true;
+      video.defaultMuted = true;
+      video.setAttribute('muted', '');
+      video.playsInline = true;
+      video.setAttribute('playsinline', 'true');
+      video.setAttribute('webkit-playsinline', 'true');
+
       // If the video is already loaded/playing (e.g. from cache)
       if (video.readyState >= 3 || !video.paused) {
         setVideoLoaded(true);
       }
 
-      video.play().then(() => {
+      const handlePlaySuccess = () => {
         setVideoLoaded(true);
-      }).catch((err) => {
-        console.warn("Autoplay prevented or failed:", err);
-      });
+      };
+
+      const startVideo = () => {
+        video.play()
+          .then(handlePlaySuccess)
+          .catch((err) => {
+            console.warn("Autoplay prevented or failed:", err);
+            
+            // On mobile/safari, if autoplay fails (e.g. Low Power Mode), 
+            // trigger play on the first user interaction (touch/click)
+            const playOnInteraction = () => {
+              video.play()
+                .then(() => {
+                  handlePlaySuccess();
+                  removeListeners();
+                })
+                .catch(() => {});
+            };
+            
+            const removeListeners = () => {
+              document.removeEventListener('touchstart', playOnInteraction);
+              document.removeEventListener('click', playOnInteraction);
+            };
+
+            document.addEventListener('touchstart', playOnInteraction, { passive: true });
+            document.addEventListener('click', playOnInteraction, { passive: true });
+          });
+      };
+
+      startVideo();
     }
   }, []);
 

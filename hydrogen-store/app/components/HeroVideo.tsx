@@ -51,16 +51,51 @@ export const HeroVideo: React.FC<HeroVideoProps> = ({
     if (videoRef.current) {
       const video = videoRef.current;
       
+      // Programmatically configure muted/playsinline to bypass iOS Safari autoplay restrictions
+      video.muted = true;
+      video.defaultMuted = true;
+      video.setAttribute('muted', '');
+      video.playsInline = true;
+      video.setAttribute('playsinline', 'true');
+      video.setAttribute('webkit-playsinline', 'true');
+
       // If already playing (e.g. from cache), reveal immediately
       if (!video.paused && !video.ended && video.readyState > 2) {
         setVideoLoaded(true);
       }
 
-      // Just trigger play — don't reveal on promise resolve,
-      // we wait for the onPlaying event instead (actual frame rendering)
-      video.play().catch((err) => {
-        console.warn("Autoplay prevented or failed:", err);
-      });
+      const handlePlaySuccess = () => {
+        setVideoLoaded(true);
+      };
+
+      const startVideo = () => {
+        video.play()
+          .then(handlePlaySuccess)
+          .catch((err) => {
+            console.warn("Autoplay prevented or failed:", err);
+            
+            // On mobile/safari, if autoplay fails (e.g. Low Power Mode), 
+            // trigger play on the first user interaction (touch/click)
+            const playOnInteraction = () => {
+              video.play()
+                .then(() => {
+                  handlePlaySuccess();
+                  removeListeners();
+                })
+                .catch(() => {});
+            };
+            
+            const removeListeners = () => {
+              document.removeEventListener('touchstart', playOnInteraction);
+              document.removeEventListener('click', playOnInteraction);
+            };
+
+            document.addEventListener('touchstart', playOnInteraction, { passive: true });
+            document.addEventListener('click', playOnInteraction, { passive: true });
+          });
+      };
+
+      startVideo();
     }
   }, []);
 
