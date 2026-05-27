@@ -1,4 +1,4 @@
-import {useRef, Suspense} from 'react';
+import {useRef, Suspense, useState, useEffect} from 'react';
 import {Disclosure, Listbox} from '@headlessui/react';
 import {
   defer,
@@ -232,7 +232,32 @@ export function ProductForm({
 }) {
   const closeRef = useRef<HTMLButtonElement>(null);
 
+  const [quantity, setQuantity] = useState(1);
+
+  // Reset quantity to 1 when variant changes
+  useEffect(() => {
+    setQuantity(1);
+  }, [selectedVariant?.id]);
+
   const isOutOfStock = !selectedVariant?.availableForSale;
+
+  const quantityAvailable = selectedVariant && 'quantityAvailable' in selectedVariant
+    ? (selectedVariant as any).quantityAvailable
+    : null;
+
+  const maxStock = typeof quantityAvailable === 'number' ? quantityAvailable : 99;
+
+  const handleDecrease = () => {
+    if (quantity > 1) {
+      setQuantity((prev) => prev - 1);
+    }
+  };
+
+  const handleIncrease = () => {
+    if (quantity < maxStock) {
+      setQuantity((prev) => prev + 1);
+    }
+  };
 
   const isOnSale =
     selectedVariant?.price?.amount &&
@@ -357,6 +382,48 @@ export function ProductForm({
         ))}
         {selectedVariant && (
           <div className="grid items-stretch gap-4">
+            
+            {/* Quantity Selector - Hidden when out of stock */}
+            {!isOutOfStock && (
+              <div className="flex flex-col gap-2 mb-2">
+                <div className="flex items-center justify-between text-xs font-mono-street uppercase tracking-wider text-primary/70">
+                  <span>Quantity</span>
+                  {typeof quantityAvailable === 'number' && quantityAvailable <= 5 && (
+                    <span className="text-zinc-500 font-bold lowercase">
+                      Only {quantityAvailable} left in stock
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center border border-primary/20 bg-contrast/50 rounded h-12 w-32 justify-between">
+                  <button
+                    type="button"
+                    onClick={handleDecrease}
+                    disabled={quantity <= 1}
+                    className="w-10 h-full flex items-center justify-center text-primary/40 hover:text-primary disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    aria-label="Decrease quantity"
+                  >
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M20 12H4" />
+                    </svg>
+                  </button>
+                  <span className="font-mono-street text-sm text-primary font-bold">
+                    {quantity}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleIncrease}
+                    disabled={quantity >= maxStock}
+                    className="w-10 h-full flex items-center justify-center text-primary/40 hover:text-primary disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    aria-label="Increase quantity"
+                  >
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            )}
+
             {isOutOfStock ? (
               <Button variant="secondary" disabled>
                 <Text>Sold out</Text>
@@ -366,7 +433,7 @@ export function ProductForm({
                 lines={[
                   {
                     merchandiseId: selectedVariant.id!,
-                    quantity: 1,
+                    quantity: quantity,
                   },
                 ]}
                 variant="primary"
@@ -486,6 +553,7 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
   fragment ProductVariant on ProductVariant {
     id
     availableForSale
+    quantityAvailable
     selectedOptions {
       name
       value
