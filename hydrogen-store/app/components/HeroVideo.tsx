@@ -67,12 +67,15 @@ export const HeroVideo: React.FC<HeroVideoProps> = ({
   return (
     <div className="relative w-full h-[90vh] min-h-[640px] bg-black overflow-hidden flex items-center justify-center">
       
-      {/* Fallback Image - Always rendered immediately underneath */}
-      <img 
-        src="/images/hero-photo.png" 
-        alt="Hero Background" 
-        className="absolute inset-0 w-full h-full object-cover object-center z-0"
-      />
+      {/* Fallback Image - Mobile gets portrait version, desktop gets landscape */}
+      <picture className="absolute inset-0 w-full h-full z-0">
+        <source media="(max-width: 768px)" srcSet="/images/hero-photo-mobile.png" />
+        <img 
+          src="/images/hero-photo.png" 
+          alt="Hero Background" 
+          className="absolute inset-0 w-full h-full object-cover object-center z-0"
+        />
+      </picture>
 
       {/* Video - Overlaid on top, fading in once playing */}
       <video
