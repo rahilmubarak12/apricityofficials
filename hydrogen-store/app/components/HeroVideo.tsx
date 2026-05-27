@@ -51,51 +51,57 @@ export const HeroVideo: React.FC<HeroVideoProps> = ({
     if (videoRef.current) {
       const video = videoRef.current;
       
-      // Programmatically configure muted/playsinline to bypass iOS Safari autoplay restrictions
+      // Programmatically ensure it is muted (safest way for Safari without resetting pipeline)
       video.muted = true;
-      video.defaultMuted = true;
-      video.setAttribute('muted', '');
-      video.playsInline = true;
-      video.setAttribute('playsinline', 'true');
-      video.setAttribute('webkit-playsinline', 'true');
-
-      // If already playing (e.g. from cache), reveal immediately
-      if (!video.paused && !video.ended && video.readyState > 2) {
-        setVideoLoaded(true);
-      }
 
       const handlePlaySuccess = () => {
         setVideoLoaded(true);
       };
 
-      const startVideo = () => {
+      // If it's already playing (e.g. native autoplay succeeded)
+      if (!video.paused && video.readyState >= 2) {
+        handlePlaySuccess();
+      }
+
+      // Listen for the playing event in case it starts after mount
+      video.addEventListener('playing', handlePlaySuccess);
+
+      // Fallback for when autoplay is blocked by browser policies (e.g. Low Power Mode)
+      const playOnInteraction = () => {
+        if (video.paused) {
+          video.play()
+            .then(() => {
+              handlePlaySuccess();
+              removeListeners();
+            })
+            .catch(() => {});
+        } else {
+          handlePlaySuccess();
+          removeListeners();
+        }
+      };
+
+      const removeListeners = () => {
+        document.removeEventListener('touchstart', playOnInteraction);
+        document.removeEventListener('click', playOnInteraction);
+      };
+
+      document.addEventListener('touchstart', playOnInteraction, { passive: true });
+      document.addEventListener('click', playOnInteraction, { passive: true });
+
+      // Try playing programmatically if not already playing
+      if (video.paused) {
         video.play()
           .then(handlePlaySuccess)
           .catch((err) => {
-            console.warn("Autoplay prevented or failed:", err);
-            
-            // On mobile/safari, if autoplay fails (e.g. Low Power Mode), 
-            // trigger play on the first user interaction (touch/click)
-            const playOnInteraction = () => {
-              video.play()
-                .then(() => {
-                  handlePlaySuccess();
-                  removeListeners();
-                })
-                .catch(() => {});
-            };
-            
-            const removeListeners = () => {
-              document.removeEventListener('touchstart', playOnInteraction);
-              document.removeEventListener('click', playOnInteraction);
-            };
-
-            document.addEventListener('touchstart', playOnInteraction, { passive: true });
-            document.addEventListener('click', playOnInteraction, { passive: true });
+            console.warn("Autoplay prevented, waiting for user interaction:", err);
           });
-      };
+      }
 
-      startVideo();
+      return () => {
+        video.removeEventListener('playing', handlePlaySuccess);
+        removeListeners();
+      };
     }
   }, []);
 
