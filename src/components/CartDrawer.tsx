@@ -63,7 +63,18 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, cart, o
               <button onClick={onClose} className="px-6 py-3 bg-[#1a1a1a] text-white text-[11px] font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors">Discover Pieces</button>
             </div>
           ) : (
-            cart.map((item, index) => (
+            cart.map((item, index) => {
+              // Look up max stock from raw Shopify variant data
+              const rawVariants: any[] = (item.product as any)?._rawVariants ?? [];
+              const matchedVariant = item.variantId
+                ? rawVariants.find((v: any) => v.id === item.variantId)
+                : rawVariants[0];
+              const maxStock = typeof matchedVariant?.quantityAvailable === 'number'
+                ? matchedVariant.quantityAvailable
+                : 99;
+              const atMax = item.quantity >= maxStock;
+
+              return (
               // FIX 11: Apply slide-out class when this index is being removed
               <div
                 key={`${item.product.id}-${item.selectedSize}-${item.selectedColor}-${index}`}
@@ -82,15 +93,19 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, cart, o
                   </div>
                   <div className="flex items-end justify-between mt-5">
                     <div className="flex items-center border border-zinc-200 bg-[#f3f2f0] rounded">
-                      <button onClick={() => onUpdateQuantity(index, item.quantity - 1)} className="px-3 py-1 text-zinc-400 hover:text-[#1a1a1a]"><Minus size={12} /></button>
+                      <button onClick={() => onUpdateQuantity(index, item.quantity - 1)} className="px-3 py-1 text-zinc-400 hover:text-[#1a1a1a] disabled:opacity-30 disabled:cursor-not-allowed" disabled={item.quantity <= 1}><Minus size={12} /></button>
                       <span className="font-mono-street text-xs px-3 text-[#1a1a1a] font-bold">{item.quantity}</span>
-                      <button onClick={() => onUpdateQuantity(index, item.quantity + 1)} className="px-3 py-1 text-zinc-400 hover:text-[#1a1a1a]"><Plus size={12} /></button>
+                      <button onClick={() => onUpdateQuantity(index, item.quantity + 1)} className={`px-3 py-1 transition-colors ${atMax ? 'text-zinc-200 cursor-not-allowed' : 'text-zinc-400 hover:text-[#1a1a1a]'}`} disabled={atMax}><Plus size={12} /></button>
                     </div>
                     <span className="font-mono-street font-bold text-sm text-[#1a1a1a]">{formatPrice(item.product.price * item.quantity)}</span>
                   </div>
+                  {atMax && (
+                    <p className="text-[10px] text-amber-500 font-mono-street mt-1.5 uppercase tracking-wider">Max stock reached</p>
+                  )}
                 </div>
               </div>
-            ))
+              );
+            })
           )}
         </div>
 
