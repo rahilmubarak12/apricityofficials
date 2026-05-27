@@ -87,12 +87,13 @@ export const HeroVideo: React.FC<HeroVideoProps> = ({
         preload="auto"
         disableRemotePlayback
         onPlaying={() => setVideoLoaded(true)}
-        className={`absolute inset-0 w-full h-full object-cover object-center z-10 transition-opacity duration-700 ease-out ${
+        className={`absolute inset-0 w-full h-full object-cover object-center z-10 transition-opacity duration-700 ease-out pointer-events-none ${
           videoLoaded ? 'opacity-100' : 'opacity-0'
         }`}
         style={{
           // Suppress browser native play button overlay (especially iOS/Android)
           WebkitAppearance: 'none' as const,
+          pointerEvents: 'none',
         }}
       >
         <source src="/videos/hero-video.mp4" type="video/mp4" />

@@ -107,10 +107,14 @@ shop-pay-button {
     -webkit-appearance: none;
   }
 
-  /* Suppress iOS/Safari native play button overlay on background videos */
-  video::-webkit-media-controls-start-playback-button {
+  /* Suppress iOS/Safari native play button overlay and media controls on background videos */
+  video::-webkit-media-controls-start-playback-button,
+  video::-webkit-media-controls-play-button,
+  video::-webkit-media-controls-panel,
+  video::-webkit-media-controls {
     display: none !important;
-    -webkit-appearance: none;
+    -webkit-appearance: none !important;
+    opacity: 0 !important;
   }
 
   a.active {

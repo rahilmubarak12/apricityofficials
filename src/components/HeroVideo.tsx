@@ -77,7 +77,7 @@ export const HeroVideo: React.FC<HeroVideoProps> = ({
         />
       </picture>
 
-      {/* Video - Overlaid on top, fading in once playing */}
+      {/* Video - Only fades in when actually playing (onPlaying), fallback image shows until then */}
       <video
         ref={videoRef}
         autoPlay
@@ -85,12 +85,16 @@ export const HeroVideo: React.FC<HeroVideoProps> = ({
         muted
         playsInline
         preload="auto"
-        onPlay={() => setVideoLoaded(true)}
+        disableRemotePlayback
         onPlaying={() => setVideoLoaded(true)}
-        onCanPlay={() => setVideoLoaded(true)}
-        className={`absolute inset-0 w-full h-full object-cover object-center z-10 transition-opacity duration-1000 ease-out ${
+        className={`absolute inset-0 w-full h-full object-cover object-center z-10 transition-opacity duration-700 ease-out pointer-events-none ${
           videoLoaded ? 'opacity-100' : 'opacity-0'
         }`}
+        style={{
+          // Suppress browser native play button overlay (especially iOS/Android)
+          WebkitAppearance: 'none' as const,
+          pointerEvents: 'none',
+        }}
       >
         <source src="/videos/hero-video.mp4" type="video/mp4" />
       </video>
