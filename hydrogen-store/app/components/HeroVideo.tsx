@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 
 export const useTypewriter = (text: string, speed = 80, delay = 0) => {
   const [displayed, setDisplayed] = useState("");
@@ -41,68 +41,36 @@ export const HeroVideo: React.FC<HeroVideoProps> = ({
   onShopWomen,
   onExploreCollection
 }) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
   const [videoLoaded, setVideoLoaded] = useState(false);
 
   const fullText = "APRICITY OFFICIALS";
   const typedText = useTypewriter(fullText, 75, 300);
 
-  useEffect(() => {
-    if (videoRef.current) {
-      const video = videoRef.current;
-      
-      // Programmatically ensure it is muted (safest way for Safari without resetting pipeline)
-      video.muted = true;
+  // Callback ref: fires synchronously when the <video> DOM node is created,
+  // BEFORE the browser makes its autoplay decision. This is the canonical fix
+  // for React's known bug where the `muted` JSX prop is not reflected as an
+  // HTML attribute, which causes Safari to block autoplay.
+  const videoRef = useCallback((el: HTMLVideoElement | null) => {
+    if (!el) return;
 
-      const handlePlaySuccess = () => {
-        setVideoLoaded(true);
-      };
+    // Set muted as a DOM property synchronously — Safari reads this before autoplay check
+    el.muted = true;
 
-      // If it's already playing (e.g. native autoplay succeeded)
-      if (!video.paused && video.readyState >= 2) {
-        handlePlaySuccess();
-      }
+    const onPlaying = () => setVideoLoaded(true);
+    el.addEventListener('playing', onPlaying);
 
-      // Listen for the playing event in case it starts after mount
-      video.addEventListener('playing', handlePlaySuccess);
-
-      // Fallback for when autoplay is blocked by browser policies (e.g. Low Power Mode)
+    // Attempt autoplay immediately
+    el.play().catch(() => {
+      // Autoplay blocked (e.g. Safari Low Power Mode) — play on first interaction
       const playOnInteraction = () => {
-        if (video.paused) {
-          video.play()
-            .then(() => {
-              handlePlaySuccess();
-              removeListeners();
-            })
-            .catch(() => {});
-        } else {
-          handlePlaySuccess();
-          removeListeners();
-        }
+        el.play().then(() => {
+          document.removeEventListener('touchstart', playOnInteraction);
+          document.removeEventListener('click', playOnInteraction);
+        }).catch(() => {});
       };
-
-      const removeListeners = () => {
-        document.removeEventListener('touchstart', playOnInteraction);
-        document.removeEventListener('click', playOnInteraction);
-      };
-
       document.addEventListener('touchstart', playOnInteraction, { passive: true });
       document.addEventListener('click', playOnInteraction, { passive: true });
-
-      // Try playing programmatically if not already playing
-      if (video.paused) {
-        video.play()
-          .then(handlePlaySuccess)
-          .catch((err) => {
-            console.warn("Autoplay prevented, waiting for user interaction:", err);
-          });
-      }
-
-      return () => {
-        video.removeEventListener('playing', handlePlaySuccess);
-        removeListeners();
-      };
-    }
+    });
   }, []);
 
   return (
@@ -121,6 +89,7 @@ export const HeroVideo: React.FC<HeroVideoProps> = ({
       {/* Video - Only fades in when actually playing (onPlaying), fallback image shows until then */}
       <video
         ref={videoRef}
+        suppressHydrationWarning
         autoPlay
         loop
         muted
