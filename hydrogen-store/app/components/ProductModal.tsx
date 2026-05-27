@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Product } from '../lib/types';
-import { X, ShoppingBag, AlertCircle } from 'lucide-react';
+import { X, ShoppingBag, AlertCircle, Minus, Plus } from 'lucide-react';
 import { getProductStock } from '../lib/shopify';
 
 interface ProductModalProps {
   product: Product;
   onClose: () => void;
-  onAddToCart: (product: Product, size: string, color: string, variantId?: string) => void;
+  onAddToCart: (product: Product, size: string, color: string, variantId?: string, quantity?: number) => void;
   formatPrice: (amountInSAR: number) => string;
 }
 
@@ -114,6 +114,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
     return initialColors[0] ?? '';
   });
   const [isAdded,       setIsAdded]       = useState(false);
+  const [quantity,      setQuantity]      = useState(1);
 
   // ------------------------------------------------------------------
   // Live stock query — Shopify Storefront API via your getProductStock()
@@ -285,13 +286,39 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
     return formatPrice(amount);
   }, [selectedVariant, formatPrice]);
 
+  const maxStock = typeof selectedQty === 'number' ? selectedQty : 99;
+
+  // Reset quantity when variant/size/color changes
+  useEffect(() => {
+    setQuantity(1);
+  }, [selectedSize, selectedColor, product.id]);
+
+  // Ensure quantity is bound to max stock if stock changes underneath
+  useEffect(() => {
+    if (quantity > maxStock) {
+      setQuantity(maxStock > 0 ? maxStock : 1);
+    }
+  }, [maxStock, quantity]);
+
+  const handleDecrease = () => {
+    if (quantity > 1) {
+      setQuantity((prev) => prev - 1);
+    }
+  };
+
+  const handleIncrease = () => {
+    if (quantity < maxStock) {
+      setQuantity((prev) => prev + 1);
+    }
+  };
+
   // ------------------------------------------------------------------
   // Add handler
   // ------------------------------------------------------------------
 
   const handleAdd = () => {
     if (!canAddToCart) return;
-    onAddToCart(product, selectedSize, selectedColor, selectedVariant?.id);
+    onAddToCart(product, selectedSize, selectedColor, selectedVariant?.id, quantity);
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 2000);
   };
@@ -484,6 +511,36 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
                 <span>·</span>
                 <span>Secure checkout</span>
               </div>
+
+              {/* Quantity selector */}
+              {canAddToCart && (
+                <div className="flex items-center justify-between border border-zinc-200 bg-white rounded-xl h-12 w-full px-4 mt-1">
+                  <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Quantity</span>
+                  <div className="flex items-center gap-4">
+                    <button
+                      type="button"
+                      onClick={handleDecrease}
+                      disabled={quantity <= 1}
+                      className="w-8 h-8 flex items-center justify-center text-zinc-400 hover:text-zinc-950 disabled:opacity-30 disabled:cursor-not-allowed transition-colors rounded-full hover:bg-zinc-50"
+                      aria-label="Decrease quantity"
+                    >
+                      <Minus size={14} />
+                    </button>
+                    <span className="font-mono-street text-sm text-zinc-950 font-bold min-w-[1.5rem] text-center">
+                      {quantity}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleIncrease}
+                      disabled={quantity >= maxStock}
+                      className="w-8 h-8 flex items-center justify-center text-zinc-400 hover:text-zinc-950 disabled:opacity-30 disabled:cursor-not-allowed transition-colors rounded-full hover:bg-zinc-50"
+                      aria-label="Increase quantity"
+                    >
+                      <Plus size={14} />
+                    </button>
+                  </div>
+                </div>
+              )}
 
               <button
                 onClick={handleAdd}

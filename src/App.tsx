@@ -556,7 +556,8 @@ export function App() {
     product: Product,
     size: string,
     color: string,
-    variantId?: string
+    variantId?: string,
+    qty: number = 1
   ) => {
     setCart((prev) => {
       const existingIdx = prev.findIndex(
@@ -569,7 +570,7 @@ export function App() {
 
       if (existingIdx > -1) {
         const next = [...prev];
-        next[existingIdx].quantity += 1;
+        next[existingIdx].quantity += qty;
         return next;
       }
 
@@ -579,7 +580,7 @@ export function App() {
           product,
           selectedSize: size,
           selectedColor: color,
-          quantity: 1,
+          quantity: qty,
           variantId,
         },
       ];
@@ -731,8 +732,8 @@ export function App() {
             variants: (activeProductModal as any)._rawVariants ?? activeProductModal.variants,
           }}
           onClose={() => setActiveProductModal(null)}
-          onAddToCart={(prod, sz, col, variantId) => {
-            handleAddToCart(prod, sz, col, variantId);
+          onAddToCart={(prod, sz, col, variantId, qty) => {
+            handleAddToCart(prod, sz, col, variantId, qty);
             setActiveProductModal(null);
           }}
           formatPrice={formatPrice}

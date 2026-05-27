@@ -553,7 +553,8 @@ export default function Homepage() {
     product: Product,
     size: string,
     color: string,
-    variantId?: string
+    variantId?: string,
+    qty: number = 1
   ) => {
     setCart((prev) => {
       const existingIdx = prev.findIndex(
@@ -566,7 +567,7 @@ export default function Homepage() {
 
       if (existingIdx > -1) {
         const next = [...prev];
-        next[existingIdx].quantity += 1;
+        next[existingIdx].quantity += qty;
         return next;
       }
 
@@ -576,7 +577,7 @@ export default function Homepage() {
           product,
           selectedSize: size,
           selectedColor: color,
-          quantity: 1,
+          quantity: qty,
           variantId,
         },
       ];
@@ -719,8 +720,8 @@ export default function Homepage() {
               variants: (activeProductModal as any)._rawVariants ?? activeProductModal.variants,
             }}
             onClose={() => setActiveProductModal(null)}
-            onAddToCart={(prod, sz, col, variantId) => {
-              handleAddToCart(prod, sz, col, variantId);
+            onAddToCart={(prod, sz, col, variantId, qty) => {
+              handleAddToCart(prod, sz, col, variantId, qty);
               setActiveProductModal(null);
             }}
             formatPrice={formatPrice}
