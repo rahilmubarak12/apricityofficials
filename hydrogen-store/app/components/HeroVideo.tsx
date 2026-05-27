@@ -69,9 +69,9 @@ export const HeroVideo: React.FC<HeroVideoProps> = ({
       
       {/* Fallback Image - Mobile gets portrait version, desktop gets landscape */}
       <picture className="absolute inset-0 w-full h-full z-0">
-        <source media="(max-width: 768px)" srcSet="/images/hero-photo-mobile.png" />
+        <source media="(max-width: 768px)" srcSet="/images/hero-photo-mobile.jpg" />
         <img 
-          src="/images/hero-photo.png" 
+          src="/images/hero-photo.jpg" 
           alt="Hero Background" 
           className="absolute inset-0 w-full h-full object-cover object-center z-0"
         />
