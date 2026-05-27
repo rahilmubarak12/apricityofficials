@@ -51,14 +51,14 @@ export const HeroVideo: React.FC<HeroVideoProps> = ({
     if (videoRef.current) {
       const video = videoRef.current;
       
-      // If the video is already loaded/playing (e.g. from cache)
-      if (video.readyState >= 3 || !video.paused) {
+      // If already playing (e.g. from cache), reveal immediately
+      if (!video.paused && !video.ended && video.readyState > 2) {
         setVideoLoaded(true);
       }
 
-      video.play().then(() => {
-        setVideoLoaded(true);
-      }).catch((err) => {
+      // Just trigger play — don't reveal on promise resolve,
+      // we wait for the onPlaying event instead (actual frame rendering)
+      video.play().catch((err) => {
         console.warn("Autoplay prevented or failed:", err);
       });
     }
@@ -77,7 +77,7 @@ export const HeroVideo: React.FC<HeroVideoProps> = ({
         />
       </picture>
 
-      {/* Video - Overlaid on top, fading in once playing */}
+      {/* Video - Only fades in when actually playing (onPlaying), fallback image shows until then */}
       <video
         ref={videoRef}
         autoPlay
@@ -85,12 +85,15 @@ export const HeroVideo: React.FC<HeroVideoProps> = ({
         muted
         playsInline
         preload="auto"
-        onPlay={() => setVideoLoaded(true)}
+        disableRemotePlayback
         onPlaying={() => setVideoLoaded(true)}
-        onCanPlay={() => setVideoLoaded(true)}
-        className={`absolute inset-0 w-full h-full object-cover object-center z-10 transition-opacity duration-1000 ease-out ${
+        className={`absolute inset-0 w-full h-full object-cover object-center z-10 transition-opacity duration-700 ease-out ${
           videoLoaded ? 'opacity-100' : 'opacity-0'
         }`}
+        style={{
+          // Suppress browser native play button overlay (especially iOS/Android)
+          WebkitAppearance: 'none' as const,
+        }}
       >
         <source src="/videos/hero-video.mp4" type="video/mp4" />
       </video>

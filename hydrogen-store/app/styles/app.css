@@ -107,6 +107,12 @@ shop-pay-button {
     -webkit-appearance: none;
   }
 
+  /* Suppress iOS/Safari native play button overlay on background videos */
+  video::-webkit-media-controls-start-playback-button {
+    display: none !important;
+    -webkit-appearance: none;
+  }
+
   a.active {
     @apply border-b;
   }
