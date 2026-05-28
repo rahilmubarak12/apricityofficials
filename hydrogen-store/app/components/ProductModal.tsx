@@ -119,6 +119,111 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
 
   const toggleSection = (id: string) => setOpenSection((prev) => (prev === id ? null : id));
 
+  // Parse description into sections dynamically using <hr> separators
+  const parsedSections = useMemo(() => {
+    const descHtml = (product as any).descriptionHtml;
+    const defaultAudience = (
+      <p className="text-sm text-zinc-500 leading-relaxed">
+        Designed for those who move between worlds — from quiet confidence to bold statements.
+        Apricity Officials speaks to the individual who appreciates quality without compromise.
+        This piece is made for you.
+      </p>
+    );
+
+    const defaultSizeFit = (
+      <div className="space-y-2 text-sm text-zinc-500 leading-relaxed">
+        <p>Designed for a versatile unisex fit, it looks great on everyone.</p>
+        <p className="text-xs text-zinc-400">Model is 6'1" / 185cm and wears size L.</p>
+      </div>
+    );
+
+    const defaultDescription = (
+      <>
+        <p className="text-sm text-zinc-500 leading-relaxed">
+          Premium heavyweight construction built to last. Clean silhouettes with considered details throughout.
+        </p>
+        <ul className="space-y-1.5 mt-3">
+          {[
+            '100% premium ring-spun cotton',
+            'Heavyweight 280gsm fabric',
+            'Ribbed cuffs and hem',
+            'Embroidered Apricity Officials branding',
+            'Dropped shoulders for a relaxed modern fit',
+          ].map((feat) => (
+            <li key={feat} className="text-xs text-zinc-400 flex items-start gap-2">
+              <span className="mt-0.5 shrink-0">·</span>{feat}
+            </li>
+          ))}
+        </ul>
+      </>
+    );
+
+    if (!descHtml) {
+      return {
+        audience: defaultAudience,
+        description: product.description ? (
+          <p className="text-sm text-zinc-500 leading-relaxed whitespace-pre-line">
+            {product.description}
+          </p>
+        ) : defaultDescription,
+        sizeFit: defaultSizeFit,
+      };
+    }
+
+    // Split by horizontal line tag <hr ...>
+    const parts = descHtml.split(/<hr\b[^>]*>/i);
+
+    if (parts.length >= 3) {
+      return {
+        audience: (
+          <div
+            className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line"
+            dangerouslySetInnerHTML={{ __html: parts[0].trim() }}
+          />
+        ),
+        description: (
+          <div
+            className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line animate-fade-in"
+            dangerouslySetInnerHTML={{ __html: parts[1].trim() }}
+          />
+        ),
+        sizeFit: (
+          <div
+            className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line animate-fade-in"
+            dangerouslySetInnerHTML={{ __html: parts[2].trim() }}
+          />
+        ),
+      };
+    } else if (parts.length === 2) {
+      return {
+        audience: defaultAudience,
+        description: (
+          <div
+            className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line animate-fade-in"
+            dangerouslySetInnerHTML={{ __html: parts[0].trim() }}
+          />
+        ),
+        sizeFit: (
+          <div
+            className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line animate-fade-in"
+            dangerouslySetInnerHTML={{ __html: parts[1].trim() }}
+          />
+        ),
+      };
+    } else {
+      return {
+        audience: defaultAudience,
+        description: (
+          <div
+            className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line"
+            dangerouslySetInnerHTML={{ __html: descHtml }}
+          />
+        ),
+        sizeFit: defaultSizeFit,
+      };
+    }
+  }, [product.description, (product as any).descriptionHtml]);
+
   // ------------------------------------------------------------------
   // Live stock query — Shopify Storefront API via your getProductStock()
   // quantityAvailable is requested per variant there; we just read it here.
@@ -574,60 +679,17 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
               {
                 id: 'audience',
                 title: 'Attention style seekers',
-                content: (
-                  <p className="text-sm text-zinc-500 leading-relaxed">
-                    Designed for those who move between worlds — from quiet confidence to bold statements.
-                    Apricity Officials speaks to the individual who appreciates quality without compromise.
-                    This piece is made for you.
-                  </p>
-                ),
+                content: parsedSections.audience,
               },
               {
                 id: 'description',
                 title: 'Description & Features',
-                content: (
-                  <div className="space-y-3">
-                    {(product as any).descriptionHtml ? (
-                      <div
-                        className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line"
-                        dangerouslySetInnerHTML={{ __html: (product as any).descriptionHtml }}
-                      />
-                    ) : (product as any).description ? (
-                      <p className="text-sm text-zinc-500 leading-relaxed whitespace-pre-line">
-                        {(product as any).description}
-                      </p>
-                    ) : (
-                      <>
-                        <p className="text-sm text-zinc-500 leading-relaxed">
-                          Premium heavyweight construction built to last. Clean silhouettes with considered details throughout.
-                        </p>
-                        <ul className="space-y-1.5">
-                          {[
-                            '100% premium ring-spun cotton',
-                            'Heavyweight 280gsm fabric',
-                            'Ribbed cuffs and hem',
-                            'Embroidered Apricity Officials branding',
-                            'Dropped shoulders for a relaxed modern fit',
-                          ].map((feat) => (
-                            <li key={feat} className="text-xs text-zinc-400 flex items-start gap-2">
-                              <span className="mt-0.5 shrink-0">·</span>{feat}
-                            </li>
-                          ))}
-                        </ul>
-                      </>
-                    )}
-                  </div>
-                ),
+                content: parsedSections.description,
               },
               {
                 id: 'size',
                 title: 'Size & Fit',
-                content: (
-                  <div className="space-y-2 text-sm text-zinc-500 leading-relaxed">
-                    <p>This piece runs true to size. For an oversized look, we recommend sizing up one.</p>
-                    <p className="text-xs text-zinc-400">Model is 6'1" / 185cm and wears size L.</p>
-                  </div>
-                ),
+                content: parsedSections.sizeFit,
               },
               {
                 id: 'care',
