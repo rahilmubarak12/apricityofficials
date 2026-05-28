@@ -187,20 +187,35 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
       </>
     );
 
+    const sizeChartHtml = (product as any).sizeChartHtml;
+
     // ── Size & Fit ──
-    const sizeFit = sizeFitHtml ? (
-      <div
-        className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line"
-        dangerouslySetInnerHTML={{ __html: sizeFitHtml }}
-      />
-    ) : product.fitNotes ? (
-      <p className="text-sm text-zinc-500 leading-relaxed whitespace-pre-line">
-        {product.fitNotes}
-      </p>
-    ) : (
-      <div className="space-y-2 text-sm text-zinc-500 leading-relaxed">
-        <p>Designed for a versatile unisex fit, it looks great on everyone.</p>
-        <p className="text-xs text-zinc-400">Model is 6'1" / 185cm and wears size L.</p>
+    const sizeFit = (
+      <div className="space-y-4">
+        {sizeFitHtml ? (
+          <div
+            className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line"
+            dangerouslySetInnerHTML={{ __html: sizeFitHtml }}
+          />
+        ) : product.fitNotes ? (
+          <p className="text-sm text-zinc-500 leading-relaxed whitespace-pre-line">
+            {product.fitNotes}
+          </p>
+        ) : (
+          <div className="space-y-2 text-sm text-zinc-500 leading-relaxed">
+            <p>Designed for a versatile unisex fit, it looks great on everyone.</p>
+            <p className="text-xs text-zinc-400">Model is 6'1" / 185cm and wears size L.</p>
+          </div>
+        )}
+        {sizeChartHtml && (
+          <div className="mt-3">
+            <p className="text-xs font-semibold text-zinc-600 uppercase tracking-wider mb-2">Size Chart (cm)</p>
+            <div
+              className="size-chart-table text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc overflow-x-auto"
+              dangerouslySetInnerHTML={{ __html: sizeChartHtml }}
+            />
+          </div>
+        )}
       </div>
     );
 

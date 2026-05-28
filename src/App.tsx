@@ -14,6 +14,32 @@ import { RefundPolicy } from './components/RefundPolicy';
 import { createStorefrontApiClient } from '@shopify/storefront-api-client';
 import { CountrySelector, COUNTRIES } from './components/CountrySelector';
 import shopifyProductDetails from './data/shopify_product_details.json';
+import shopifySizeCharts from './data/shopify_size_charts.json';
+
+// Map each product handle to its size chart page handle
+const PRODUCT_SIZE_CHART_MAP: Record<string, string> = {
+  'oversized-sweatshirt-turtleneck': 'size-chart',
+  'double-collar-cropped-sweatshirt': 'women-size-chart',
+  'oversized-dual-tone-sweatshirt': 'unisex-sweatshirts-size-chart',
+  'overlap-neck-sweatshirt': 'unisex-sweatshirts-size-chart',
+  'crewneck-oversized-sweatshirt': 'unisex-sweatshirts-size-chart',
+  'a-new-era-cropped-sweatshirt': 'a-new-era-cropped-sweatshirt-size-chart',
+  'hoodie-with-burgundy-piping': 'unisex-hoodies-size-chart',
+  'hoodie-with-leather-piped-detailing': 'unisex-hoodies-size-chart',
+  'all-in-well-hoodie': 'unisex-hoodies-size-chart',
+  'apricity-leather-patch-hoodie': 'unisex-hoodies-size-chart',
+  '3d-apricity-hoodie': 'unisex-hoodies-size-chart',
+  'indulge-in-self-love-hoodie': 'unisex-hoodies-size-chart',
+  'club-1932-t-shirt': 't-shirt-size-chart',
+  'onyx-black': 't-shirt-size-chart',
+  'onyx-gray': 't-shirt-size-chart',
+  'echoes-of-silence-green': 't-shirt-size-chart',
+  'echoes-of-silence-white': 't-shirt-size-chart',
+  'bayview-linen-set': 'linen-shirt-shorts-size-chart',
+  'staple-sand': 'staple-sand-unisex-size-chart',
+  'apricity-blush': 'women-size-chart',
+  'apy-butter-set': 'women-size-chart',
+};
 
 
 const shopifyClient = createStorefrontApiClient({
@@ -200,6 +226,14 @@ function mapShopifyProduct(node: any): any {
     attentionSeekersMetafield: scraped?.attentionStyleSeekers || node.attentionSeekers?.value || node.attentionSeekers2?.value || node.styleSeekers?.value || '',
     descriptionFeaturesHtml: scraped?.descriptionFeatures || '',
     sizeFitMetafield: scraped?.sizeFit || node.sizeFit?.value || node.sizeFit2?.value || '',
+    sizeChartHtml: (() => {
+      const chartHandle = PRODUCT_SIZE_CHART_MAP[handle];
+      if (chartHandle) {
+        const chart = (shopifySizeCharts as Record<string, any>)[chartHandle];
+        if (chart) return chart.body;
+      }
+      return '';
+    })(),
     careMetafield: scraped?.takeCareOfMe || node.careInstructions?.value || node.takeCare?.value || '',
     price: parseFloat(node.priceRange.minVariantPrice.amount),
     originalPrice: node.compareAtPriceRange?.minVariantPrice?.amount
@@ -380,8 +414,8 @@ const FALLBACK_RATES: Record<string, number> = {
   ZWL: 7.019093,
 };
 
-const PRODUCTS_CACHE_KEY = 'apricity_products_v4';
-const PRODUCTS_CACHE_TIME_KEY = 'apricity_products_time_v4';
+const PRODUCTS_CACHE_KEY = 'apricity_products_v5';
+const PRODUCTS_CACHE_TIME_KEY = 'apricity_products_time_v5';
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
 export function App() {
