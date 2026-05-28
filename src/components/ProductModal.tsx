@@ -130,7 +130,11 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
       </p>
     );
 
-    const defaultSizeFit = (
+    const defaultSizeFit = product.fitNotes ? (
+      <p className="text-sm text-zinc-500 leading-relaxed whitespace-pre-line">
+        {product.fitNotes}
+      </p>
+    ) : (
       <div className="space-y-2 text-sm text-zinc-500 leading-relaxed">
         <p>Designed for a versatile unisex fit, it looks great on everyone.</p>
         <p className="text-xs text-zinc-400">Model is 6'1" / 185cm and wears size L.</p>
@@ -139,22 +143,38 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
 
     const defaultDescription = (
       <>
-        <p className="text-sm text-zinc-500 leading-relaxed">
-          Premium heavyweight construction built to last. Clean silhouettes with considered details throughout.
-        </p>
-        <ul className="space-y-1.5 mt-3">
-          {[
-            '100% premium ring-spun cotton',
-            'Heavyweight 280gsm fabric',
-            'Ribbed cuffs and hem',
-            'Embroidered Apricity Officials branding',
-            'Dropped shoulders for a relaxed modern fit',
-          ].map((feat) => (
-            <li key={feat} className="text-xs text-zinc-400 flex items-start gap-2">
-              <span className="mt-0.5 shrink-0">·</span>{feat}
-            </li>
-          ))}
-        </ul>
+        {product.description ? (
+          <p className="text-sm text-zinc-500 leading-relaxed whitespace-pre-line">
+            {product.description}
+          </p>
+        ) : (
+          <p className="text-sm text-zinc-500 leading-relaxed">
+            Premium heavyweight construction built to last. Clean silhouettes with considered details throughout.
+          </p>
+        )}
+        {(product.fabricDetails && product.fabricDetails.length > 0) ? (
+          <ul className="space-y-1.5 mt-3">
+            {product.fabricDetails.map((feat) => (
+              <li key={feat} className="text-xs text-zinc-400 flex items-start gap-2">
+                <span className="mt-0.5 shrink-0">·</span>{feat}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <ul className="space-y-1.5 mt-3">
+            {[
+              '100% premium ring-spun cotton',
+              'Heavyweight 280gsm fabric',
+              'Ribbed cuffs and hem',
+              'Embroidered Apricity Officials branding',
+              'Dropped shoulders for a relaxed modern fit',
+            ].map((feat) => (
+              <li key={feat} className="text-xs text-zinc-400 flex items-start gap-2">
+                <span className="mt-0.5 shrink-0">·</span>{feat}
+              </li>
+            ))}
+          </ul>
+        )}
       </>
     );
 
@@ -174,10 +194,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
             className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line"
             dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
           />
-        ) : product.description ? (
-          <p className="text-sm text-zinc-500 leading-relaxed whitespace-pre-line">
-            {product.description}
-          </p>
         ) : defaultDescription,
         sizeFit: product.sizeFitMetafield ? (
           <div
@@ -191,11 +207,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
     if (!descHtml) {
       return {
         audience: defaultAudience,
-        description: product.description ? (
-          <p className="text-sm text-zinc-500 leading-relaxed whitespace-pre-line">
-            {product.description}
-          </p>
-        ) : defaultDescription,
+        description: defaultDescription,
         sizeFit: defaultSizeFit,
       };
     }
@@ -257,7 +269,9 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
     (product as any).descriptionHtml,
     product.attentionSeekersMetafield,
     product.sizeFitMetafield,
-    product.careMetafield
+    product.careMetafield,
+    product.fabricDetails,
+    product.fitNotes
   ]);
 
   // ------------------------------------------------------------------
