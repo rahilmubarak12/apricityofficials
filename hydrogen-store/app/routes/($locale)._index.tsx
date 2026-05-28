@@ -33,6 +33,7 @@ const PRODUCTS_QUERY = `#graphql
       edges {
         node {
           id
+          handle
           title
           description
           descriptionHtml
@@ -188,12 +189,14 @@ function mapShopifyProduct(node: any): any {
   const tags: string[] = node.tags ?? [];
   const images: string[] = node.images.edges.map((e: any) => e.node.url);
   const firstVariantId = node.variants.edges[0]?.node.id ?? '';
+  const handle: string = node.handle ?? '';
 
   const collections = mapShopifyCollections(node);
   const primaryCollection = collections[0] ?? 'new-drops';
 
   return {
     id: node.id,
+    handle,
     name: node.title,
     description: node.description ?? '',
     descriptionHtml: node.descriptionHtml ?? '',

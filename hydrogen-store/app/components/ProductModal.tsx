@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Product } from '../lib/types';
 import { X, ShoppingBag, AlertCircle, Minus, Plus } from 'lucide-react';
 import { getProductStock } from '../lib/shopify';
+import shopifyProductDetails from '../data/shopify_product_details.json';
 
 interface ProductModalProps {
   product: Product;
@@ -119,10 +120,24 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
 
   const toggleSection = (id: string) => setOpenSection((prev) => (prev === id ? null : id));
 
-  // Parse description into sections dynamically using <hr> separators
+  // Parse description into sections dynamically using scraped data or fallbacks
   const parsedSections = useMemo(() => {
+    const handle = (product as any).handle ?? '';
+    const scraped = (shopifyProductDetails as Record<string, any>)[handle] ?? null;
+
     const descHtml = (product as any).descriptionHtml;
-    const defaultAudience = (
+    const descFeaturesHtml = scraped?.descriptionFeatures || (product as any).descriptionFeaturesHtml;
+    const attentionHtml = scraped?.attentionStyleSeekers || (product as any).attentionSeekersMetafield;
+    const sizeFitHtml = scraped?.sizeFit || (product as any).sizeFitMetafield;
+    const careHtml = scraped?.takeCareOfMe || (product as any).careMetafield;
+
+    // ── Audience / Attention Style Seekers ──
+    const audience = attentionHtml ? (
+      <div
+        className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line"
+        dangerouslySetInnerHTML={{ __html: attentionHtml }}
+      />
+    ) : (
       <p className="text-sm text-zinc-500 leading-relaxed">
         Designed for those who move between worlds — from quiet confidence to bold statements.
         Apricity Officials speaks to the individual who appreciates quality without compromise.
@@ -130,31 +145,29 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
       </p>
     );
 
-    const defaultSizeFit = product.fitNotes ? (
+    // ── Description & Features ──
+    const description = descFeaturesHtml ? (
+      <div
+        className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line"
+        dangerouslySetInnerHTML={{ __html: descFeaturesHtml }}
+      />
+    ) : descHtml ? (
+      <div
+        className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line"
+        dangerouslySetInnerHTML={{ __html: descHtml }}
+      />
+    ) : product.description ? (
       <p className="text-sm text-zinc-500 leading-relaxed whitespace-pre-line">
-        {product.fitNotes}
+        {product.description}
       </p>
     ) : (
-      <div className="space-y-2 text-sm text-zinc-500 leading-relaxed">
-        <p>Designed for a versatile unisex fit, it looks great on everyone.</p>
-        <p className="text-xs text-zinc-400">Model is 6'1" / 185cm and wears size L.</p>
-      </div>
-    );
-
-    const defaultDescription = (
       <>
-        {product.description ? (
-          <p className="text-sm text-zinc-500 leading-relaxed whitespace-pre-line">
-            {product.description}
-          </p>
-        ) : (
-          <p className="text-sm text-zinc-500 leading-relaxed">
-            Premium heavyweight construction built to last. Clean silhouettes with considered details throughout.
-          </p>
-        )}
+        <p className="text-sm text-zinc-500 leading-relaxed">
+          Premium heavyweight construction built to last. Clean silhouettes with considered details throughout.
+        </p>
         {(product.fabricDetails && product.fabricDetails.length > 0) ? (
           <ul className="space-y-1.5 mt-3">
-            {product.fabricDetails.map((feat) => (
+            {product.fabricDetails.map((feat: string) => (
               <li key={feat} className="text-xs text-zinc-400 flex items-start gap-2">
                 <span className="mt-0.5 shrink-0">·</span>{feat}
               </li>
@@ -178,98 +191,54 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
       </>
     );
 
-    // If specific metafields exist on the product, prioritize them!
-    const hasMetafields = product.attentionSeekersMetafield || product.sizeFitMetafield || product.careMetafield;
+    // ── Size & Fit ──
+    const sizeFit = sizeFitHtml ? (
+      <div
+        className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line"
+        dangerouslySetInnerHTML={{ __html: sizeFitHtml }}
+      />
+    ) : product.fitNotes ? (
+      <p className="text-sm text-zinc-500 leading-relaxed whitespace-pre-line">
+        {product.fitNotes}
+      </p>
+    ) : (
+      <div className="space-y-2 text-sm text-zinc-500 leading-relaxed">
+        <p>Designed for a versatile unisex fit, it looks great on everyone.</p>
+        <p className="text-xs text-zinc-400">Model is 6'1" / 185cm and wears size L.</p>
+      </div>
+    );
 
-    if (hasMetafields) {
-      return {
-        audience: product.attentionSeekersMetafield ? (
-          <div
-            className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line"
-            dangerouslySetInnerHTML={{ __html: product.attentionSeekersMetafield }}
-          />
-        ) : defaultAudience,
-        description: product.descriptionHtml ? (
-          <div
-            className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line"
-            dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
-          />
-        ) : defaultDescription,
-        sizeFit: product.sizeFitMetafield ? (
-          <div
-            className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line"
-            dangerouslySetInnerHTML={{ __html: product.sizeFitMetafield }}
-          />
-        ) : defaultSizeFit,
-      };
-    }
+    // ── Take Care of Me ──
+    const care = careHtml ? (
+      <div
+        className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line"
+        dangerouslySetInnerHTML={{ __html: careHtml }}
+      />
+    ) : (
+      <ul className="space-y-1.5">
+        {[
+          'Machine wash cold at 30°C, inside out',
+          'Do not tumble dry — hang to dry',
+          'Iron on low heat, inside out only',
+          'Do not bleach',
+          'Store folded to preserve shape',
+        ].map((inst) => (
+          <li key={inst} className="text-xs text-zinc-400 flex items-start gap-2">
+            <span className="mt-0.5 shrink-0">·</span>{inst}
+          </li>
+        ))}
+      </ul>
+    );
 
-    if (!descHtml) {
-      return {
-        audience: defaultAudience,
-        description: defaultDescription,
-        sizeFit: defaultSizeFit,
-      };
-    }
-
-    // Split by horizontal line tag <hr ...>
-    const parts = descHtml.split(/<hr\b[^>]*>/i);
-
-    if (parts.length >= 3) {
-      return {
-        audience: (
-          <div
-            className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line"
-            dangerouslySetInnerHTML={{ __html: parts[0].trim() }}
-          />
-        ),
-        description: (
-          <div
-            className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line animate-fade-in"
-            dangerouslySetInnerHTML={{ __html: parts[1].trim() }}
-          />
-        ),
-        sizeFit: (
-          <div
-            className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line animate-fade-in"
-            dangerouslySetInnerHTML={{ __html: parts[2].trim() }}
-          />
-        ),
-      };
-    } else if (parts.length === 2) {
-      return {
-        audience: defaultAudience,
-        description: (
-          <div
-            className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line animate-fade-in"
-            dangerouslySetInnerHTML={{ __html: parts[0].trim() }}
-          />
-        ),
-        sizeFit: (
-          <div
-            className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line animate-fade-in"
-            dangerouslySetInnerHTML={{ __html: parts[1].trim() }}
-          />
-        ),
-      };
-    } else {
-      return {
-        audience: defaultAudience,
-        description: (
-          <div
-            className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line"
-            dangerouslySetInnerHTML={{ __html: descHtml }}
-          />
-        ),
-        sizeFit: defaultSizeFit,
-      };
-    }
+    return { audience, description, sizeFit, care };
   }, [
     product.description,
     (product as any).descriptionHtml,
-    product.attentionSeekersMetafield,
-    product.sizeFitMetafield,
-    product.careMetafield,
+    (product as any).descriptionFeaturesHtml,
+    (product as any).attentionSeekersMetafield,
+    (product as any).sizeFitMetafield,
+    (product as any).careMetafield,
+    (product as any).handle,
     product.fabricDetails,
     product.fitNotes
   ]);
@@ -744,21 +713,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
               {
                 id: 'care',
                 title: 'Take care of me',
-                content: (
-                  <ul className="space-y-1.5">
-                    {[
-                      'Machine wash cold at 30°C, inside out',
-                      'Do not tumble dry — hang to dry',
-                      'Iron on low heat, inside out only',
-                      'Do not bleach',
-                      'Store folded to preserve shape',
-                    ].map((inst) => (
-                      <li key={inst} className="text-xs text-zinc-400 flex items-start gap-2">
-                        <span className="mt-0.5 shrink-0">·</span>{inst}
-                      </li>
-                    ))}
-                  </ul>
-                ),
+                content: parsedSections.care,
               },
             ] as { id: string; title: string; content: React.ReactNode }[]).map(({ id, title, content }) => (
               <div key={id} className="border-b border-zinc-100">

@@ -13,6 +13,8 @@ import { SkeletonCard } from './components/ProductSection';
 import { RefundPolicy } from './components/RefundPolicy';
 import { createStorefrontApiClient } from '@shopify/storefront-api-client';
 import { CountrySelector, COUNTRIES } from './components/CountrySelector';
+import shopifyProductDetails from './data/shopify_product_details.json';
+
 
 const shopifyClient = createStorefrontApiClient({
   storeDomain: import.meta.env.VITE_SHOPIFY_STORE_DOMAIN,
@@ -26,6 +28,7 @@ const PRODUCTS_QUERY = `
       edges {
         node {
           id
+          handle
           title
           description
           descriptionHtml
@@ -179,18 +182,25 @@ function mapShopifyProduct(node: any): any {
   const tags: string[] = node.tags ?? [];
   const images: string[] = node.images.edges.map((e: any) => e.node.url);
   const firstVariantId = node.variants.edges[0]?.node.id ?? '';
+  const handle: string = node.handle ?? '';
 
   const collections = mapShopifyCollections(node);
   const primaryCollection = collections[0] ?? 'new-drops';
 
+  // Look up scraped accordion details by product handle
+  const scraped = (shopifyProductDetails as Record<string, any>)[handle] ?? null;
+
   return {
     id: node.id,
+    handle,
     name: node.title,
     description: node.description ?? '',
     descriptionHtml: node.descriptionHtml ?? '',
-    attentionSeekersMetafield: node.attentionSeekers?.value || node.attentionSeekers2?.value || node.styleSeekers?.value || '',
-    sizeFitMetafield: node.sizeFit?.value || node.sizeFit2?.value || '',
-    careMetafield: node.careInstructions?.value || node.takeCare?.value || '',
+    // Scraped data takes priority, then metafields, then empty string (triggers defaults)
+    attentionSeekersMetafield: scraped?.attentionStyleSeekers || node.attentionSeekers?.value || node.attentionSeekers2?.value || node.styleSeekers?.value || '',
+    descriptionFeaturesHtml: scraped?.descriptionFeatures || '',
+    sizeFitMetafield: scraped?.sizeFit || node.sizeFit?.value || node.sizeFit2?.value || '',
+    careMetafield: scraped?.takeCareOfMe || node.careInstructions?.value || node.takeCare?.value || '',
     price: parseFloat(node.priceRange.minVariantPrice.amount),
     originalPrice: node.compareAtPriceRange?.minVariantPrice?.amount
       ? parseFloat(node.compareAtPriceRange.minVariantPrice.amount)
@@ -370,8 +380,8 @@ const FALLBACK_RATES: Record<string, number> = {
   ZWL: 7.019093,
 };
 
-const PRODUCTS_CACHE_KEY = 'apricity_products';
-const PRODUCTS_CACHE_TIME_KEY = 'apricity_products_time';
+const PRODUCTS_CACHE_KEY = 'apricity_products_v4';
+const PRODUCTS_CACHE_TIME_KEY = 'apricity_products_time_v4';
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
 export function App() {

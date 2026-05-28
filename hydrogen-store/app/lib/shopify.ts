@@ -38,6 +38,7 @@ export const getProducts = async () => {
   const products = data.products.edges.map(({ node: product }: any) => {
     return {
       id: product.id,
+      handle: product.handle ?? '',
       title: product.title,
       description: product.description,
       descriptionHtml: product.descriptionHtml,

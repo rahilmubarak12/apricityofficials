@@ -4,6 +4,7 @@ export const PRODUCTS_QUERY = `
       edges {
         node {
           id
+          handle
           title
           description
           descriptionHtml
