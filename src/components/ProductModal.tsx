@@ -115,6 +115,9 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
   });
   const [isAdded,       setIsAdded]       = useState(false);
   const [quantity,      setQuantity]      = useState(1);
+  const [openSection,  setOpenSection]  = useState<string | null>(null);
+
+  const toggleSection = (id: string) => setOpenSection((prev) => (prev === id ? null : id));
 
   // ------------------------------------------------------------------
   // Live stock query — Shopify Storefront API via your getProductStock()
@@ -384,12 +387,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
             )}
           </div>
 
-          {/* Description */}
-          {(product as any).description && (
-            <p className="text-sm text-zinc-500 leading-relaxed">
-              {(product as any).description}
-            </p>
-          )}
+
 
           {/* Colours */}
           {hasColors && (
@@ -568,6 +566,99 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
                 )}
               </button>
             </div>
+          </div>
+
+          {/* ── ACCORDION SECTIONS ── */}
+          <div className="mt-4 border-t border-zinc-100">
+            {([
+              {
+                id: 'audience',
+                title: 'Attention style seekers',
+                content: (
+                  <p className="text-sm text-zinc-500 leading-relaxed">
+                    Designed for those who move between worlds — from quiet confidence to bold statements.
+                    Apricity Officials speaks to the individual who appreciates quality without compromise.
+                    This piece is made for you.
+                  </p>
+                ),
+              },
+              {
+                id: 'description',
+                title: 'Description & Features',
+                content: (
+                  <div className="space-y-3">
+                    <p className="text-sm text-zinc-500 leading-relaxed">
+                      {(product as any).description
+                        ? (product as any).description
+                        : 'Premium heavyweight construction built to last. Clean silhouettes with considered details throughout.'}
+                    </p>
+                    <ul className="space-y-1.5">
+                      {[
+                        '100% premium ring-spun cotton',
+                        'Heavyweight 280gsm fabric',
+                        'Ribbed cuffs and hem',
+                        'Embroidered Apricity Officials branding',
+                        'Dropped shoulders for a relaxed modern fit',
+                      ].map((feat) => (
+                        <li key={feat} className="text-xs text-zinc-400 flex items-start gap-2">
+                          <span className="mt-0.5 shrink-0">·</span>{feat}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ),
+              },
+              {
+                id: 'size',
+                title: 'Size & Fit',
+                content: (
+                  <div className="space-y-2 text-sm text-zinc-500 leading-relaxed">
+                    <p>This piece runs true to size. For an oversized look, we recommend sizing up one.</p>
+                    <p className="text-xs text-zinc-400">Model is 6'1" / 185cm and wears size L.</p>
+                  </div>
+                ),
+              },
+              {
+                id: 'care',
+                title: 'Take care of me',
+                content: (
+                  <ul className="space-y-1.5">
+                    {[
+                      'Machine wash cold at 30°C, inside out',
+                      'Do not tumble dry — hang to dry',
+                      'Iron on low heat, inside out only',
+                      'Do not bleach',
+                      'Store folded to preserve shape',
+                    ].map((inst) => (
+                      <li key={inst} className="text-xs text-zinc-400 flex items-start gap-2">
+                        <span className="mt-0.5 shrink-0">·</span>{inst}
+                      </li>
+                    ))}
+                  </ul>
+                ),
+              },
+            ] as { id: string; title: string; content: React.ReactNode }[]).map(({ id, title, content }) => (
+              <div key={id} className="border-b border-zinc-100">
+                <button
+                  onClick={() => toggleSection(id)}
+                  className="w-full flex items-center justify-between py-4 text-left group"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-zinc-300 text-xs select-none font-light">‡</span>
+                    <span className="text-sm text-zinc-700 font-medium tracking-wide">{title}</span>
+                  </div>
+                  <span
+                    className="text-zinc-400 text-xl leading-none transition-transform duration-300 ease-in-out"
+                    style={{ transform: openSection === id ? 'rotate(45deg)' : 'rotate(0deg)' }}
+                  >+</span>
+                </button>
+                {openSection === id && (
+                  <div className="pb-5 px-1 animate-fade-in">
+                    {content}
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
 
         </div>
