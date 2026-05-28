@@ -6,6 +6,7 @@ export const PRODUCTS_QUERY = `
           id
           title
           description
+          descriptionHtml
           tags
           priceRange {
             minVariantPrice {

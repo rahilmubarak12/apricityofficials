@@ -25,6 +25,7 @@ export interface Product {
   colors: ProductColor[];
   variants: ProductVariant[];
   description: string;
+  descriptionHtml?: string;
   fabricDetails: string[];
   fitNotes: string;
   isBestSeller?: boolean;

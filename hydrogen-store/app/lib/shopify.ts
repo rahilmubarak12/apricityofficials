@@ -40,6 +40,7 @@ export const getProducts = async () => {
       id: product.id,
       title: product.title,
       description: product.description,
+      descriptionHtml: product.descriptionHtml,
       price: product.priceRange.minVariantPrice.amount,
       currencyCode: product.priceRange.minVariantPrice.currencyCode,
       gender: getGender(product),

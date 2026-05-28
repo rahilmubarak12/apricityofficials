@@ -587,24 +587,35 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
                 title: 'Description & Features',
                 content: (
                   <div className="space-y-3">
-                    <p className="text-sm text-zinc-500 leading-relaxed">
-                      {(product as any).description
-                        ? (product as any).description
-                        : 'Premium heavyweight construction built to last. Clean silhouettes with considered details throughout.'}
-                    </p>
-                    <ul className="space-y-1.5">
-                      {[
-                        '100% premium ring-spun cotton',
-                        'Heavyweight 280gsm fabric',
-                        'Ribbed cuffs and hem',
-                        'Embroidered Apricity Officials branding',
-                        'Dropped shoulders for a relaxed modern fit',
-                      ].map((feat) => (
-                        <li key={feat} className="text-xs text-zinc-400 flex items-start gap-2">
-                          <span className="mt-0.5 shrink-0">·</span>{feat}
-                        </li>
-                      ))}
-                    </ul>
+                    {(product as any).descriptionHtml ? (
+                      <div
+                        className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line"
+                        dangerouslySetInnerHTML={{ __html: (product as any).descriptionHtml }}
+                      />
+                    ) : (product as any).description ? (
+                      <p className="text-sm text-zinc-500 leading-relaxed whitespace-pre-line">
+                        {(product as any).description}
+                      </p>
+                    ) : (
+                      <>
+                        <p className="text-sm text-zinc-500 leading-relaxed">
+                          Premium heavyweight construction built to last. Clean silhouettes with considered details throughout.
+                        </p>
+                        <ul className="space-y-1.5">
+                          {[
+                            '100% premium ring-spun cotton',
+                            'Heavyweight 280gsm fabric',
+                            'Ribbed cuffs and hem',
+                            'Embroidered Apricity Officials branding',
+                            'Dropped shoulders for a relaxed modern fit',
+                          ].map((feat) => (
+                            <li key={feat} className="text-xs text-zinc-400 flex items-start gap-2">
+                              <span className="mt-0.5 shrink-0">·</span>{feat}
+                            </li>
+                          ))}
+                        </ul>
+                      </>
+                    )}
                   </div>
                 ),
               },

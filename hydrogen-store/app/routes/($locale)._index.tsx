@@ -35,6 +35,7 @@ const PRODUCTS_QUERY = `#graphql
           id
           title
           description
+          descriptionHtml
           tags
           collections(first: 10) {
             edges {
@@ -188,6 +189,7 @@ function mapShopifyProduct(node: any): any {
     id: node.id,
     name: node.title,
     description: node.description ?? '',
+    descriptionHtml: node.descriptionHtml ?? '',
     price: parseFloat(node.priceRange.minVariantPrice.amount),
     originalPrice: node.compareAtPriceRange?.minVariantPrice?.amount
       ? parseFloat(node.compareAtPriceRange.minVariantPrice.amount)

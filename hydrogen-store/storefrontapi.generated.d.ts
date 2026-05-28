@@ -208,7 +208,7 @@ export type GetProductsQuery = {
     edges: Array<{
       node: Pick<
         StorefrontAPI.Product,
-        'id' | 'title' | 'description' | 'tags'
+        'id' | 'title' | 'description' | 'descriptionHtml' | 'tags'
       > & {
         collections: {
           edges: Array<{
@@ -1104,7 +1104,7 @@ interface GeneratedQueryTypes {
     return: GetShopPrimaryDomainQuery;
     variables: GetShopPrimaryDomainQueryVariables;
   };
-  '#graphql\n  query getProducts {\n    products(first: 50) {\n      edges {\n        node {\n          id\n          title\n          description\n          tags\n          collections(first: 10) {\n            edges {\n              node {\n                id\n                title\n                handle\n              }\n            }\n          }\n          priceRange {\n            minVariantPrice {\n              amount\n              currencyCode\n            }\n          }\n          compareAtPriceRange {\n            minVariantPrice {\n              amount\n            }\n          }\n          images(first: 5) {\n            edges {\n              node {\n                url\n                altText\n              }\n            }\n          }\n          variants(first: 10) {\n            edges {\n              node {\n                id\n                title\n                availableForSale\n                quantityAvailable\n                selectedOptions {\n                  name\n                  value\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  query getProducts {\n    products(first: 50) {\n      edges {\n        node {\n          id\n          title\n          description\n          descriptionHtml\n          tags\n          collections(first: 10) {\n            edges {\n              node {\n                id\n                title\n                handle\n              }\n            }\n          }\n          priceRange {\n            minVariantPrice {\n              amount\n              currencyCode\n            }\n          }\n          compareAtPriceRange {\n            minVariantPrice {\n              amount\n            }\n          }\n          images(first: 5) {\n            edges {\n              node {\n                url\n                altText\n              }\n            }\n          }\n          variants(first: 10) {\n            edges {\n              node {\n                id\n                title\n                availableForSale\n                quantityAvailable\n                selectedOptions {\n                  name\n                  value\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n': {
     return: GetProductsQuery;
     variables: GetProductsQueryVariables;
   };
