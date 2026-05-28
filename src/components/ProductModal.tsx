@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Product } from '../types';
-import { X, ShoppingBag, AlertCircle, Minus, Plus } from 'lucide-react';
+import { X, ShoppingBag, AlertCircle, Minus, Plus, Ruler } from 'lucide-react';
 import { getProductStock } from '../services/shopify';
 
 interface ProductModalProps {
@@ -116,8 +116,10 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
   const [isAdded,       setIsAdded]       = useState(false);
   const [quantity,      setQuantity]      = useState(1);
   const [openSection,  setOpenSection]  = useState<string | null>(null);
+  const [showSizeChart, setShowSizeChart] = useState(false);
 
   const toggleSection = (id: string) => setOpenSection((prev) => (prev === id ? null : id));
+  const sizeChartHtml = (product as any).sizeChartHtml;
 
   // Parse description into sections dynamically using scraped data or fallbacks
   const parsedSections = useMemo(() => {
@@ -208,13 +210,13 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
           </div>
         )}
         {sizeChartHtml && (
-          <div className="mt-3">
-            <p className="text-xs font-semibold text-zinc-600 uppercase tracking-wider mb-2">Size Chart (cm)</p>
-            <div
-              className="size-chart-table text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc overflow-x-auto"
-              dangerouslySetInnerHTML={{ __html: sizeChartHtml }}
-            />
-          </div>
+          <button
+            onClick={() => setShowSizeChart(true)}
+            className="mt-3 flex items-center gap-2 text-xs font-semibold text-zinc-700 hover:text-zinc-950 bg-white hover:bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 transition-all shadow-sm active:scale-[0.98]"
+          >
+            <Ruler size={13} className="text-zinc-500" />
+            <span>Size Guide</span>
+          </button>
         )}
       </div>
     );
@@ -751,6 +753,50 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
 
         </div>
       </div>
+
+      {showSizeChart && sizeChartHtml && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in"
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowSizeChart(false);
+          }}
+        >
+          <div
+            className="bg-white w-full max-w-2xl rounded-2xl p-6 md:p-8 shadow-2xl flex flex-col relative max-h-[85vh] overflow-hidden transform transition-all animate-scale-up"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between pb-4 border-b border-zinc-100 mb-6">
+              <div className="flex items-center gap-2.5">
+                <Ruler size={18} className="text-zinc-700" />
+                <h3 className="text-sm font-semibold text-zinc-900 tracking-wide uppercase">
+                  Size Guide — {product.name}
+                </h3>
+              </div>
+              <button
+                onClick={() => setShowSizeChart(false)}
+                className="p-1.5 rounded-full text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100 transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Scrollable content container */}
+            <div className="overflow-x-auto overflow-y-auto pr-2 flex-grow">
+              <div
+                className="size-chart-table text-sm text-zinc-600 prose prose-sm max-w-none prose-zinc"
+                dangerouslySetInnerHTML={{ __html: sizeChartHtml }}
+              />
+            </div>
+
+            {/* Footer */}
+            <div className="mt-6 pt-4 border-t border-zinc-100 text-[10px] text-zinc-400 flex items-center justify-center">
+              <span>All measurements are in centimeters (cm) unless specified otherwise.</span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
