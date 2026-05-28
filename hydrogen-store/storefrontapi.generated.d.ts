@@ -210,6 +210,21 @@ export type GetProductsQuery = {
         StorefrontAPI.Product,
         'id' | 'title' | 'description' | 'descriptionHtml' | 'tags'
       > & {
+        attentionSeekers?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'value'>
+        >;
+        attentionSeekers2?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'value'>
+        >;
+        styleSeekers?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'value'>
+        >;
+        sizeFit?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+        sizeFit2?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+        careInstructions?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'value'>
+        >;
+        takeCare?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
         collections: {
           edges: Array<{
             node: Pick<StorefrontAPI.Collection, 'id' | 'title' | 'handle'>;
@@ -1104,7 +1119,7 @@ interface GeneratedQueryTypes {
     return: GetShopPrimaryDomainQuery;
     variables: GetShopPrimaryDomainQueryVariables;
   };
-  '#graphql\n  query getProducts {\n    products(first: 50) {\n      edges {\n        node {\n          id\n          title\n          description\n          descriptionHtml\n          tags\n          collections(first: 10) {\n            edges {\n              node {\n                id\n                title\n                handle\n              }\n            }\n          }\n          priceRange {\n            minVariantPrice {\n              amount\n              currencyCode\n            }\n          }\n          compareAtPriceRange {\n            minVariantPrice {\n              amount\n            }\n          }\n          images(first: 5) {\n            edges {\n              node {\n                url\n                altText\n              }\n            }\n          }\n          variants(first: 10) {\n            edges {\n              node {\n                id\n                title\n                availableForSale\n                quantityAvailable\n                selectedOptions {\n                  name\n                  value\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  query getProducts {\n    products(first: 50) {\n      edges {\n        node {\n          id\n          title\n          description\n          descriptionHtml\n          tags\n          attentionSeekers: metafield(namespace: "custom", key: "attention_seekers") { value }\n          attentionSeekers2: metafield(namespace: "custom", key: "attention_style_seekers") { value }\n          styleSeekers: metafield(namespace: "custom", key: "style_seekers") { value }\n          sizeFit: metafield(namespace: "custom", key: "size_fit") { value }\n          sizeFit2: metafield(namespace: "custom", key: "size_and_fit") { value }\n          careInstructions: metafield(namespace: "custom", key: "care_instructions") { value }\n          takeCare: metafield(namespace: "custom", key: "take_care_of_me") { value }\n          collections(first: 10) {\n            edges {\n              node {\n                id\n                title\n                handle\n              }\n            }\n          }\n          priceRange {\n            minVariantPrice {\n              amount\n              currencyCode\n            }\n          }\n          compareAtPriceRange {\n            minVariantPrice {\n              amount\n            }\n          }\n          images(first: 5) {\n            edges {\n              node {\n                url\n                altText\n              }\n            }\n          }\n          variants(first: 10) {\n            edges {\n              node {\n                id\n                title\n                availableForSale\n                quantityAvailable\n                selectedOptions {\n                  name\n                  value\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n': {
     return: GetProductsQuery;
     variables: GetProductsQueryVariables;
   };

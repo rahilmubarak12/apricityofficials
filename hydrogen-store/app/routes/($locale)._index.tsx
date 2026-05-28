@@ -37,6 +37,13 @@ const PRODUCTS_QUERY = `#graphql
           description
           descriptionHtml
           tags
+          attentionSeekers: metafield(namespace: "custom", key: "attention_seekers") { value }
+          attentionSeekers2: metafield(namespace: "custom", key: "attention_style_seekers") { value }
+          styleSeekers: metafield(namespace: "custom", key: "style_seekers") { value }
+          sizeFit: metafield(namespace: "custom", key: "size_fit") { value }
+          sizeFit2: metafield(namespace: "custom", key: "size_and_fit") { value }
+          careInstructions: metafield(namespace: "custom", key: "care_instructions") { value }
+          takeCare: metafield(namespace: "custom", key: "take_care_of_me") { value }
           collections(first: 10) {
             edges {
               node {
@@ -190,6 +197,9 @@ function mapShopifyProduct(node: any): any {
     name: node.title,
     description: node.description ?? '',
     descriptionHtml: node.descriptionHtml ?? '',
+    attentionSeekersMetafield: node.attentionSeekers?.value || node.attentionSeekers2?.value || node.styleSeekers?.value || '',
+    sizeFitMetafield: node.sizeFit?.value || node.sizeFit2?.value || '',
+    careMetafield: node.careInstructions?.value || node.takeCare?.value || '',
     price: parseFloat(node.priceRange.minVariantPrice.amount),
     originalPrice: node.compareAtPriceRange?.minVariantPrice?.amount
       ? parseFloat(node.compareAtPriceRange.minVariantPrice.amount)

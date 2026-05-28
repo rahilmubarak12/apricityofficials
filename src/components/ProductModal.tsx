@@ -158,6 +158,36 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
       </>
     );
 
+    // If specific metafields exist on the product, prioritize them!
+    const hasMetafields = product.attentionSeekersMetafield || product.sizeFitMetafield || product.careMetafield;
+
+    if (hasMetafields) {
+      return {
+        audience: product.attentionSeekersMetafield ? (
+          <div
+            className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line"
+            dangerouslySetInnerHTML={{ __html: product.attentionSeekersMetafield }}
+          />
+        ) : defaultAudience,
+        description: product.descriptionHtml ? (
+          <div
+            className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line"
+            dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+          />
+        ) : product.description ? (
+          <p className="text-sm text-zinc-500 leading-relaxed whitespace-pre-line">
+            {product.description}
+          </p>
+        ) : defaultDescription,
+        sizeFit: product.sizeFitMetafield ? (
+          <div
+            className="text-sm text-zinc-500 leading-relaxed prose prose-sm max-w-none prose-zinc whitespace-pre-line"
+            dangerouslySetInnerHTML={{ __html: product.sizeFitMetafield }}
+          />
+        ) : defaultSizeFit,
+      };
+    }
+
     if (!descHtml) {
       return {
         audience: defaultAudience,
@@ -222,7 +252,13 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
         sizeFit: defaultSizeFit,
       };
     }
-  }, [product.description, (product as any).descriptionHtml]);
+  }, [
+    product.description,
+    (product as any).descriptionHtml,
+    product.attentionSeekersMetafield,
+    product.sizeFitMetafield,
+    product.careMetafield
+  ]);
 
   // ------------------------------------------------------------------
   // Live stock query — Shopify Storefront API via your getProductStock()

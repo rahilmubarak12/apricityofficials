@@ -26,6 +26,9 @@ export interface Product {
   variants: ProductVariant[];
   description: string;
   descriptionHtml?: string;
+  attentionSeekersMetafield?: string;
+  sizeFitMetafield?: string;
+  careMetafield?: string;
   fabricDetails: string[];
   fitNotes: string;
   isBestSeller?: boolean;
