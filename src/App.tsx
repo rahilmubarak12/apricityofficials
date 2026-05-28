@@ -16,30 +16,53 @@ import { CountrySelector, COUNTRIES } from './components/CountrySelector';
 import shopifyProductDetails from './data/shopify_product_details.json';
 import shopifySizeCharts from './data/shopify_size_charts.json';
 
-// Map each product handle to its size chart page handle
-const PRODUCT_SIZE_CHART_MAP: Record<string, string> = {
-  'oversized-sweatshirt-turtleneck': 'size-chart',
-  'double-collar-cropped-sweatshirt': 'women-size-chart',
-  'oversized-dual-tone-sweatshirt': 'unisex-sweatshirts-size-chart',
-  'overlap-neck-sweatshirt': 'unisex-sweatshirts-size-chart',
-  'crewneck-oversized-sweatshirt': 'unisex-sweatshirts-size-chart',
-  'a-new-era-cropped-sweatshirt': 'a-new-era-cropped-sweatshirt-size-chart',
-  'hoodie-with-burgundy-piping': 'unisex-hoodies-size-chart',
-  'hoodie-with-leather-piped-detailing': 'unisex-hoodies-size-chart',
-  'all-in-well-hoodie': 'unisex-hoodies-size-chart',
-  'apricity-leather-patch-hoodie': 'unisex-hoodies-size-chart',
-  '3d-apricity-hoodie': 'unisex-hoodies-size-chart',
-  'indulge-in-self-love-hoodie': 'unisex-hoodies-size-chart',
-  'club-1932-t-shirt': 't-shirt-size-chart',
-  'onyx-black': 't-shirt-size-chart',
-  'onyx-gray': 't-shirt-size-chart',
-  'echoes-of-silence-green': 't-shirt-size-chart',
-  'echoes-of-silence-white': 't-shirt-size-chart',
-  'bayview-linen-set': 'linen-shirt-shorts-size-chart',
-  'staple-sand': 'staple-sand-unisex-size-chart',
-  'apricity-blush': 'women-size-chart',
-  'apy-butter-set': 'women-size-chart',
-};
+// Auto-detect size chart page handle from product tags + title.
+// When client adds a new product of any existing type (hoodie, sweatshirt, etc.),
+// it will automatically pick up the correct size chart with zero code changes.
+function resolveSizeChartHandle(handle: string, tags: string[], title: string): string {
+  const t = tags.map((s) => s.toLowerCase());
+  const h = handle.toLowerCase();
+  const n = title.toLowerCase();
+
+  // Hoodie
+  if (t.some((s) => s.includes('hoodie')) || h.includes('hoodie') || n.includes('hoodie')) {
+    return 'unisex-hoodies-size-chart';
+  }
+  // Women-specific sweatshirts / sets
+  if (
+    (t.some((s) => s.includes('women')) || n.includes('women') || n.includes('blush') || n.includes('butter')) &&
+    (t.some((s) => s.includes('sweatshirt') || s.includes('set') || s.includes('top')) || n.includes('sweatshirt') || n.includes('set') || n.includes('top') || h.includes('blush') || h.includes('butter'))
+  ) {
+    return 'women-size-chart';
+  }
+  // Linen sets
+  if (t.some((s) => s.includes('linen')) || h.includes('linen') || n.includes('linen')) {
+    return 'linen-shirt-shorts-size-chart';
+  }
+  // Sweatshirt (unisex)
+  if (t.some((s) => s.includes('sweatshirt')) || h.includes('sweatshirt') || n.includes('sweatshirt')) {
+    return 'unisex-sweatshirts-size-chart';
+  }
+  // T-shirt
+  if (t.some((s) => s.includes('t-shirt') || s.includes('tee')) || h.includes('t-shirt') || n.includes('t-shirt') || n.includes('tee')) {
+    return 't-shirt-size-chart';
+  }
+  // Handle-specific fallbacks for existing products without clear tags
+  const handleMap: Record<string, string> = {
+    'oversized-sweatshirt-turtleneck': 'size-chart',
+    'a-new-era-cropped-sweatshirt': 'a-new-era-cropped-sweatshirt-size-chart',
+    'apricity-blush': 'women-size-chart',
+    'apy-butter-set': 'women-size-chart',
+    'onyx-black': 't-shirt-size-chart',
+    'onyx-gray': 't-shirt-size-chart',
+    'echoes-of-silence-green': 't-shirt-size-chart',
+    'echoes-of-silence-white': 't-shirt-size-chart',
+    'staple-sand': 'staple-sand-unisex-size-chart',
+    'bayview-linen-set': 'linen-shirt-shorts-size-chart',
+    'club-1932-t-shirt': 't-shirt-size-chart',
+  };
+  return handleMap[handle] ?? '';
+}
 
 
 const shopifyClient = createStorefrontApiClient({
@@ -227,7 +250,7 @@ function mapShopifyProduct(node: any): any {
     descriptionFeaturesHtml: scraped?.descriptionFeatures || '',
     sizeFitMetafield: scraped?.sizeFit || node.sizeFit?.value || node.sizeFit2?.value || '',
     sizeChartHtml: (() => {
-      const chartHandle = PRODUCT_SIZE_CHART_MAP[handle];
+      const chartHandle = resolveSizeChartHandle(handle, tags, node.title);
       if (chartHandle) {
         const chart = (shopifySizeCharts as Record<string, any>)[chartHandle];
         if (chart) return chart.body;
