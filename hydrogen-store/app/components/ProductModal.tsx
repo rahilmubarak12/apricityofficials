@@ -212,15 +212,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
             <p className="text-xs text-zinc-400">Model is 6'1" / 185cm and wears size L.</p>
           </div>
         )}
-        {sizeChartHtml && (
-          <button
-            onClick={() => setShowSizeChart(true)}
-            className="mt-3 flex items-center gap-2 text-xs font-semibold text-zinc-700 hover:text-zinc-950 bg-white hover:bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 transition-all shadow-sm active:scale-[0.98]"
-          >
-            <Ruler size={13} className="text-zinc-500" />
-            <span>Size Guide</span>
-          </button>
-        )}
       </div>
     );
 
@@ -630,13 +621,25 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
                   })}
                 </div>
 
-                {/* Legend — only show if any size has qty data from Shopify */}
-                {availableSizes.some((sz) => sizeQtyMap[sz] !== null && (sizeQtyMap[sz] ?? 0) <= 10 && (sizeQtyMap[sz] ?? 0) > 0) && (
-                  <p className="mt-3 text-[10px] text-zinc-400 flex items-center gap-1.5">
-                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0" />
-                    Low stock
-                  </p>
-                )}
+                {/* Legend and Size Guide button */}
+                <div className="mt-3.5 flex items-center justify-between">
+                  {availableSizes.some((sz) => sizeQtyMap[sz] !== null && (sizeQtyMap[sz] ?? 0) <= 10 && (sizeQtyMap[sz] ?? 0) > 0) ? (
+                    <p className="text-[10px] text-zinc-400 flex items-center gap-1.5">
+                      <span className="inline-block w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0" />
+                      Low stock
+                    </p>
+                  ) : <div />}
+
+                  {sizeChartHtml && (
+                    <button
+                      onClick={() => setShowSizeChart(true)}
+                      className="flex items-center gap-1.5 text-xs font-semibold text-zinc-500 hover:text-zinc-800 transition-colors"
+                    >
+                      <Ruler size={13} className="text-zinc-400" />
+                      <span>Size Guide</span>
+                    </button>
+                  )}
+                </div>
               </div>
             )}
 
