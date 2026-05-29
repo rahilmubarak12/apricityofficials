@@ -207,13 +207,13 @@ export const ProductSection = React.memo(({
                 {/* IMAGE */}
                 <div className="relative h-[220px] sm:h-[380px] w-full bg-[#f3f2f0] overflow-hidden mb-3 sm:mb-4">
                   {isOutOfStock && (
-                    <span className="absolute top-3 right-3 bg-black text-white text-[9px] sm:text-[10px] font-mono-street font-extrabold uppercase tracking-widest px-2.5 py-1 z-20 rounded-sm">
+                    <span className="absolute top-3 right-3 bg-red-600 text-white text-[9px] sm:text-[10px] font-mono-street font-extrabold uppercase tracking-widest px-2.5 py-1 z-20 rounded-sm">
                       Out of Stock
                     </span>
                   )}
 
                   {showDiscountBadge && (
-                    <span className="absolute top-3 left-3 bg-black text-white text-[9px] sm:text-[10px] font-mono-street font-extrabold uppercase tracking-widest px-2.5 py-1 z-20 rounded-sm shadow-md">
+                    <span className="absolute top-3 left-3 bg-[#1a1a1a] text-white text-[9px] sm:text-[10px] font-mono-street font-extrabold uppercase tracking-widest px-2.5 py-1 z-20 rounded-sm shadow-md">
                       {formatPriceCompact(moneyOff)} OFF
                     </span>
                   )}
@@ -282,28 +282,58 @@ export const ProductSection = React.memo(({
 
                   <div className="flex items-center justify-between mt-1 pt-2 border-t border-zinc-100">
 
-                      <div className="flex flex-col gap-0.5">
-                      {product.originalPrice && Number(product.originalPrice) > 0 && Number(product.originalPrice) > Number(product.price) && (
-                        <span className="font-mono-street text-[10px] tracking-wide text-zinc-400 line-through">
-                          {formatPrice(product.originalPrice)}
-                        </span>
-                      )}
-                      <span className="font-mono-street font-semibold text-[12px] tracking-wide text-zinc-500">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono-street font-semibold text-[12px] tracking-wide text-zinc-900">
                         {formatPrice(product.price)}
                       </span>
+                      {originalPriceVal > currentPriceVal && (
+                        <span className="font-mono-street text-[11px] tracking-wide text-zinc-400 line-through">
+                          {formatPrice(originalPriceVal)}
+                        </span>
+                      )}
                     </div>
 
                     <div className="flex items-center gap-1.5">
-                      {product.colors?.map((c, i) => (
-                        <span
-                          key={i}
-                          className="w-2.5 h-2.5 rounded-full border border-zinc-300"
-                          style={{
-                            backgroundColor: c.hex || (c as any).color || '#1a1a1a'
-                          }}
-                          title={c.name}
-                        />
-                      ))}
+                      {(() => {
+                        // Derive unique color names from Shopify variant selectedOptions
+                        const rawVariants: any[] = (product as any)._rawVariants ?? product.variants ?? [];
+                        const colorNames = Array.from(new Set(
+                          rawVariants.flatMap((v: any) =>
+                            (v?.selectedOptions ?? [])
+                              .filter((o: any) => /colou?r/i.test(o?.name ?? ''))
+                              .map((o: any) => o.value as string)
+                          )
+                        )) as string[];
+
+                        // CSS named colors and common mappings for Shopify color option values
+                        const toCSS = (name: string): string => {
+                          const map: Record<string, string> = {
+                            black: '#1a1a1a', white: '#f5f5f5', cream: '#f5f0e8',
+                            beige: '#d4b896', sand: '#c2a882', brown: '#6b4226',
+                            camel: '#c19a6b', khaki: '#b8a87a', olive: '#6b7c41',
+                            navy: '#1a2744', blue: '#2563eb', lightblue: '#93c5fd',
+                            sky: '#7dd3fc', teal: '#0d9488', green: '#16a34a',
+                            sage: '#7c9e6e', mint: '#a7f3d0', red: '#dc2626',
+                            burgundy: '#7f1d1d', wine: '#6b1d2e', pink: '#f9a8d4',
+                            blush: '#fbc8c8', purple: '#7c3aed', lavender: '#c4b5fd',
+                            grey: '#9ca3af', gray: '#9ca3af', charcoal: '#374151',
+                            stone: '#a8a29e', taupe: '#b5a99a', yellow: '#facc15',
+                            mustard: '#d97706', orange: '#f97316', rust: '#c2410c',
+                            coral: '#fb7185', ecru: '#f0e6d3', ivory: '#f8f4e8',
+                          };
+                          return map[name.toLowerCase().replace(/\s+/g, '')] ?? name.toLowerCase();
+                        };
+
+                        if (!colorNames.length) return null;
+                        return colorNames.slice(0, 4).map((name, i) => (
+                          <span
+                            key={i}
+                            className="w-3 h-3 rounded-full border border-zinc-300 shadow-sm"
+                            style={{ backgroundColor: toCSS(name) }}
+                            title={name}
+                          />
+                        ));
+                      })()}
                     </div>
 
                   </div>

@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -77,7 +78,7 @@ shop-pay-button {
   }
 
   body {
-    font-family: 'Jost', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     background-color: #faf9f7;
     color: #1a1a1a;
     @apply border-primary/10 antialiased;
@@ -89,7 +90,7 @@ shop-pay-button {
 
   /* Headings default to the premium display stack */
   h1, h2, h3, h4 {
-    font-family: 'Jost', sans-serif;
+    font-family: 'Dream Avenue', 'Cormorant Garamond', 'Bodoni Moda', 'Montserrat', serif;
   }
 
   model-viewer::part(default-progress-mask) {
@@ -217,13 +218,13 @@ shop-pay-button {
    - font-heading: luxury display / brand identity — uses Dream Avenue with premium serif fallbacks
    - font-mono-street: compact monospaced street aesthetic — uses Montserrat with tight tracking */
 .font-heading {
-  font-family: 'Jost', sans-serif;
+  font-family: 'Dream Avenue', 'Cormorant Garamond', 'Bodoni Moda', 'Montserrat', serif;
   font-weight: 800;
   letter-spacing: 0.04em;
 }
 
 .font-mono-street {
-  font-family: 'Jost', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 500;
   letter-spacing: 0.06em;
 }
@@ -357,3 +358,10 @@ shop-pay-button {
   animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+
+/* ── Jost: global site font ── */
+body,
+html,
+* {
+  font-family: 'Jost', sans-serif;
+}

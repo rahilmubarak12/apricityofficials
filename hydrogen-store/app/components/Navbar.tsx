@@ -154,19 +154,26 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* CENTER LOGO IMAGE + TEXT */}
-          <div
-            className="flex flex-col items-center justify-center cursor-pointer select-none gap-1"
-            onClick={() => { onSelectCategory('all'); onSelectCollection('all'); setMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+          <a
+            href="/"
+            className="flex flex-row items-center justify-center cursor-pointer select-none gap-3 sm:gap-4 no-underline"
+            onClick={() => { setMobileMenuOpen(false); }}
           >
             <img 
-              src="images/logo.png" 
+              src="/images/logo.png" 
               alt="Apricity Logo" 
-              className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 object-contain transition-all" 
+              className="h-10 w-10 sm:h-14 sm:w-14 lg:h-16 lg:w-16 object-contain transition-all" 
             />
-            <span className={`font-heading font-extrabold text-sm sm:text-lg lg:text-xl tracking-[0.3em] uppercase transition-all leading-none ${logoColor}`}>
-              APRICITY
-            </span>
-          </div>
+            
+            <div className="flex flex-col items-start justify-center text-left">
+              <span className={`font-heading font-extrabold text-lg sm:text-2xl lg:text-3xl tracking-[0.22em] uppercase transition-all leading-none ${logoColor}`}>
+                APRICITY
+              </span>
+              <span className="font-mono-street text-[6px] sm:text-[9px] tracking-[0.55em] text-zinc-400 uppercase font-light mt-1 ml-0.5 transition-all leading-none">
+                OFFICIALS
+              </span>
+            </div>
+          </a>
 
           {/* RIGHT ICONS */}
           <div className="flex items-center gap-3 sm:gap-6 lg:gap-8 justify-end text-sm sm:text-[17px] font-mono-street uppercase tracking-[0.1em] font-medium">
