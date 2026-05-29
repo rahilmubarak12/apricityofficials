@@ -38,7 +38,11 @@ const getOptionValues = (variants: any[], optionType: 'size' | 'color'): string[
 const findVariant = (variants: any[], size: string, color: string | null) =>
   variants.find((v) => {
     const opts: { name: string; value: string }[] = v?.selectedOptions ?? [];
-    if (!opts.length) return true;
+    // custom shape: { size, stock } — match directly
+    if (!opts.length) {
+      if (v?.size) return v.size.toLowerCase() === size.toLowerCase();
+      return true;
+    }
     const hasSizeOpt  = opts.some((o) => o.name.toLowerCase().includes('size') || o.name.toLowerCase().includes('sizes'));
     const hasColorOpt = opts.some((o) => o.name.toLowerCase().includes('color') || o.name.toLowerCase().includes('colour'));
     const sizeMatch   = hasSizeOpt
@@ -65,6 +69,8 @@ const isVariantInStock = (variant: any): boolean => {
   if (!variant) return false;
   const qty = getVariantQty(variant);
   if (qty !== null) return qty > 0;
+  // custom shape: { stock: number }
+  if (typeof variant.stock === 'number') return variant.stock > 0;
   return variant.availableForSale !== false;
 };
 
@@ -280,8 +286,11 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
   const availableSizes = useMemo(() => {
     const sizes = getOptionValues(liveVariants, 'size');
     if (sizes.length) return sizes;
+    // fallback: custom variant shape { size, stock }
+    const fromSize = Array.from(new Set(liveVariants.map((v) => v?.size).filter(Boolean)));
+    if (fromSize.length) return fromSize;
     const titles = Array.from(new Set(liveVariants.map((v) => v?.title).filter(Boolean)));
-    if (titles.length === 1 && titles[0].toLowerCase() === 'default title') {
+    if (titles.length === 1 && (titles[0] as string).toLowerCase() === 'default title') {
       return [];
     }
     return titles;
