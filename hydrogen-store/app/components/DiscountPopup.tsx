@@ -64,13 +64,21 @@ export const DiscountPopup: React.FC = () => {
 
         {/* Content */}
         <div className="px-8 py-8 text-center flex flex-col items-center gap-5">
-          <div>
+
+          {/* Offer 1 — discount */}
+          <div className="w-full border border-zinc-100 rounded-xl px-6 py-4 bg-zinc-50">
             <p className="font-heading font-bold text-3xl text-[#1a1a1a] mb-1">15% Off</p>
-            <p className="text-zinc-500 text-sm font-light">your first order</p>
+            <p className="text-zinc-500 text-sm font-light">when you purchase two or more items</p>
+          </div>
+
+          {/* Offer 2 — free shipping */}
+          <div className="w-full border border-zinc-100 rounded-xl px-6 py-4 bg-zinc-50 flex items-center justify-center gap-3">
+            <span className="text-2xl">🇸🇦</span>
+            <p className="text-zinc-700 text-sm font-light">Free shipping with no minimum order</p>
           </div>
 
           <p className="text-zinc-400 text-xs font-mono-street tracking-wider uppercase leading-relaxed">
-            Use code at checkout
+            Apply code at checkout
           </p>
 
           {/* Code box */}
