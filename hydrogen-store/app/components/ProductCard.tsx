@@ -80,14 +80,14 @@ export function ProductCard({
               {product.title}
             </Text>
             <div className="flex gap-4">
-              <Text className="flex gap-4">
-                <Money withoutTrailingZeros data={price!} />
+              <Text className="flex gap-2 items-baseline">
                 {isDiscounted(price as MoneyV2, compareAtPrice as MoneyV2) && (
                   <CompareAtPrice
-                    className={'opacity-50'}
+                    className={'opacity-50 text-sm'}
                     data={compareAtPrice as MoneyV2}
                   />
                 )}
+                <Money withoutTrailingZeros data={price!} />
               </Text>
             </div>
           </div>
