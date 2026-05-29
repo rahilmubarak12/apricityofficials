@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ShoppingBag, Search, Menu, X } from 'lucide-react';
+import { Link } from '@remix-run/react';
 import { Category, Collection } from '../lib/types';
 
 interface NavbarProps {
@@ -154,10 +155,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* CENTER LOGO IMAGE + TEXT */}
-          <a
-            href="/"
+          <Link
+            to="/"
             className="flex flex-row items-center justify-center cursor-pointer select-none gap-3 sm:gap-4 no-underline"
-            onClick={() => { setMobileMenuOpen(false); }}
+            onClick={() => { onSelectCategory('all'); onSelectCollection('all'); setMobileMenuOpen(false); }}
           >
             <img 
               src="/images/logo.png" 
@@ -173,7 +174,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 OFFICIALS
               </span>
             </div>
-          </a>
+          </Link>
 
           {/* RIGHT ICONS */}
           <div className="flex items-center gap-3 sm:gap-6 lg:gap-8 justify-end text-sm sm:text-[17px] font-mono-street uppercase tracking-[0.1em] font-medium">

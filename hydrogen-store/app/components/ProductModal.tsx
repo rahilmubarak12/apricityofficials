@@ -380,10 +380,13 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
 
   const selectedVariantOutOfStock = selectedVariant ? !isVariantInStock(selectedVariant) : false;
 
+  // For products with no size options (single "Default Title" variant), always treat as selected
+  const effectiveVariant = selectedVariant ?? (liveVariants.length === 1 ? liveVariants[0] : undefined);
+
   const canAddToCart =
     !isCompletelyOutOfStock &&
     !selectedVariantOutOfStock &&
-    (!!selectedVariant || liveVariants.length === 1);
+    (!!effectiveVariant);
 
   // ------------------------------------------------------------------
   // Selected variant stock label (shown after a size is picked)
@@ -452,7 +455,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
 
   const handleAdd = () => {
     if (!canAddToCart) return;
-    onAddToCart(product, selectedSize, selectedColor, selectedVariant?.id, quantity);
+    onAddToCart(product, selectedSize, selectedColor, effectiveVariant?.id, quantity);
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 2000);
   };
