@@ -95,6 +95,7 @@ const PRODUCTS_QUERY = `#graphql
           sizeFit2: metafield(namespace: "custom", key: "size_and_fit") { value }
           careInstructions: metafield(namespace: "custom", key: "care_instructions") { value }
           takeCare: metafield(namespace: "custom", key: "take_care_of_me") { value }
+          sizeChartHandle: metafield(namespace: "custom", key: "size_chart_handle") { value }
           collections(first: 10) {
             edges {
               node {
@@ -137,6 +138,23 @@ const PRODUCTS_QUERY = `#graphql
               }
             }
           }
+        }
+      }
+    }
+  }
+` as const;
+
+// Fetch ALL pages from Shopify so size charts (and any future pages) are always up-to-date.
+// When the client creates a new size chart page in Shopify, it will automatically be available
+// on the next page load — no code changes or redeployment needed.
+const PAGES_QUERY = `#graphql
+  query getPages {
+    pages(first: 100) {
+      edges {
+        node {
+          handle
+          title
+          body
         }
       }
     }
@@ -235,7 +253,7 @@ function mapRawVariants(variantEdges: any[]): any[] {
   return variantEdges.map(({ node }) => node);
 }
 
-function mapShopifyProduct(node: any): any {
+function mapShopifyProduct(node: any, pagesMap: Record<string, { title: string; body: string }>): any {
   const tags: string[] = node.tags ?? [];
   const images: string[] = node.images.edges.map((e: any) => e.node.url);
   const firstVariantId = node.variants.edges[0]?.node.id ?? '';
@@ -247,11 +265,26 @@ function mapShopifyProduct(node: any): any {
   // Look up scraped accordion details by product handle
   const scraped = (shopifyProductDetails as Record<string, any>)[handle] ?? null;
 
-  // Look up size chart HTML — auto-detected from tags + title
-  const chartHandle = resolveSizeChartHandle(handle, tags, node.title);
-  const sizeChartHtml = chartHandle
-    ? ((shopifySizeCharts as Record<string, any>)[chartHandle]?.body ?? '')
-    : '';
+  // Look up size chart HTML with 3-tier resolution:
+  // 1. Explicit metafield set by client in Shopify Admin (zero-code linking)
+  // 2. Auto-detection from product tags / title / handle
+  // 3. Static fallback JSON for resilience
+  let sizeChartHtml = '';
+  const metafieldHandle = node.sizeChartHandle?.value;
+  if (metafieldHandle && pagesMap[metafieldHandle]) {
+    sizeChartHtml = pagesMap[metafieldHandle].body;
+  } else {
+    const chartHandle = resolveSizeChartHandle(handle, tags, node.title);
+    if (chartHandle) {
+      const dynamicChart = pagesMap[chartHandle];
+      if (dynamicChart) {
+        sizeChartHtml = dynamicChart.body;
+      } else {
+        const staticChart = (shopifySizeCharts as Record<string, any>)[chartHandle];
+        if (staticChart) sizeChartHtml = staticChart.body;
+      }
+    }
+  }
 
   return {
     id: node.id,
@@ -274,7 +307,31 @@ function mapShopifyProduct(node: any): any {
     subCategory: mapSubCategory(tags, node.title),
     tags,
     images: images.length > 0 ? images : ['/placeholder.jpg'],
-    colors: [{ name: 'Standard', hex: '#1a1a1a', image: images[0] ?? '' }],
+    colors: (() => {
+      const colorMap: Record<string, string> = {
+        black: '#1a1a1a', white: '#f5f5f5', grey: '#9ca3af', gray: '#9ca3af',
+        beige: '#d4b896', cream: '#f0e8d8', brown: '#7c4f2f', navy: '#1e3a5f',
+        blue: '#2563eb', red: '#dc2626', green: '#16a34a', olive: '#6b7c2f',
+        khaki: '#c3a96b', sand: '#c2a97e', tan: '#c49a6c', pink: '#ec4899',
+        purple: '#7c3aed', orange: '#ea580c', yellow: '#ca8a04', charcoal: '#374151',
+        stone: '#a8a29e', camel: '#c19a6b', off_white: '#f5f0e8', ecru: '#ede8d5',
+      };
+      const colorVariants = node.variants.edges
+        .map(({ node: v }: any) => {
+          const colorOpt = v.selectedOptions?.find((o: any) =>
+            o.name.toLowerCase() === 'color' || o.name.toLowerCase() === 'colour'
+          );
+          return colorOpt ? colorOpt.value : null;
+        })
+        .filter(Boolean);
+      const unique = Array.from(new Set(colorVariants)) as string[];
+      if (unique.length === 0) return [{ name: 'Standard', hex: '#1a1a1a', image: images[0] ?? '' }];
+      return unique.map((colorName: string) => {
+        const key = colorName.toLowerCase().replace(/\s+/g, '_').replace(/-/g, '_');
+        const hex = colorMap[key] ?? colorMap[colorName.toLowerCase()] ?? '#1a1a1a';
+        return { name: colorName, hex, image: images[0] ?? '' };
+      });
+    })(),
     variants: mapVariants(node.variants.edges),
     fabricDetails: [],
     fitNotes: '',
@@ -294,12 +351,28 @@ function mapShopifyProduct(node: any): any {
 export async function loader({context}: LoaderFunctionArgs) {
   const { storefront } = context;
 
-  // Run the critical Shopify query on the server side
-  const data = await storefront.query(PRODUCTS_QUERY);
-  const rawProducts = data?.products?.edges?.map((e: any) => e.node) || [];
+  // Fetch products and all Shopify pages (size charts) in parallel on the server
+  const [productsData, pagesData] = await Promise.all([
+    storefront.query(PRODUCTS_QUERY),
+    storefront.query(PAGES_QUERY).catch((err: any) => {
+      console.warn('Failed to fetch pages, falling back to static size charts:', err);
+      return null;
+    }),
+  ]);
+
+  const rawProducts = productsData?.products?.edges?.map((e: any) => e.node) || [];
+
+  // Build a lookup of all Shopify pages by handle
+  const pagesMap: Record<string, { title: string; body: string }> = {};
+  if (pagesData?.pages?.edges) {
+    for (const { node: pg } of pagesData.pages.edges) {
+      pagesMap[pg.handle] = { title: pg.title, body: pg.body };
+    }
+  }
 
   return defer({
     rawProducts,
+    pagesMap,
     seo: {
       title: 'APRICITY',
       description: 'APRICITY Official Storefront - Premium Heavyweight Apparel',
@@ -476,14 +549,14 @@ const FALLBACK_RATES: Record<string, number> = {
 // ---------------------------------------------------------------------------
 
 export default function Homepage() {
-  const { rawProducts } = useLoaderData<typeof loader>();
+  const { rawProducts, pagesMap } = useLoaderData<typeof loader>();
   
   // React Query Client setup for client-side components (like ProductModal)
   const [queryClient] = useState(() => new QueryClient());
 
   const mappedProducts = useMemo(() => {
-    return rawProducts.map((node: any) => mapShopifyProduct(node));
-  }, [rawProducts]);
+    return rawProducts.map((node: any) => mapShopifyProduct(node, (pagesMap as Record<string, { title: string; body: string }>) ?? {}));
+  }, [rawProducts, pagesMap]);
 
   const [products] = useState<any[]>(mappedProducts);
   const [cart, setCart] = useState<CartItem[]>([]);

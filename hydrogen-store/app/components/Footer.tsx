@@ -230,7 +230,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectCategory: _onSelectCateg
         {/* Bottom */}
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-6 text-[10px] font-mono-street text-zinc-500 uppercase tracking-widest">
           <div>© {new Date().getFullYear()} Apricity Officials. All Rights Reserved.</div>
-          <div>Designed in Riyadh 🇸🇦</div>
+          <div>Designed in Saudi Arabia 🇸🇦</div>
         </div>
 
       </div>

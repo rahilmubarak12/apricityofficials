@@ -207,13 +207,13 @@ export const ProductSection = React.memo(({
                 {/* IMAGE */}
                 <div className="relative h-[220px] sm:h-[380px] w-full bg-[#f3f2f0] overflow-hidden mb-3 sm:mb-4">
                   {isOutOfStock && (
-                    <span className="absolute top-3 right-3 bg-red-600 text-white text-[9px] sm:text-[10px] font-mono-street font-extrabold uppercase tracking-widest px-2.5 py-1 z-20 rounded-sm">
+                    <span className="absolute top-3 right-3 bg-black text-white text-[9px] sm:text-[10px] font-mono-street font-extrabold uppercase tracking-widest px-2.5 py-1 z-20 rounded-sm">
                       Out of Stock
                     </span>
                   )}
 
                   {showDiscountBadge && (
-                    <span className="absolute top-3 left-3 bg-[#e11d48] text-white text-[9px] sm:text-[10px] font-mono-street font-extrabold uppercase tracking-widest px-2.5 py-1 z-20 rounded-sm shadow-md animate-pulse">
+                    <span className="absolute top-3 left-3 bg-black text-white text-[9px] sm:text-[10px] font-mono-street font-extrabold uppercase tracking-widest px-2.5 py-1 z-20 rounded-sm shadow-md">
                       {formatPriceCompact(moneyOff)} OFF
                     </span>
                   )}
@@ -282,9 +282,16 @@ export const ProductSection = React.memo(({
 
                   <div className="flex items-center justify-between mt-1 pt-2 border-t border-zinc-100">
 
-                    <span className="font-mono-street font-semibold text-[12px] tracking-wide text-zinc-500">
-                      {formatPrice(product.price)}
-                    </span>
+                    <div className="flex flex-col gap-0.5">
+                      {product.originalPrice && parseFloat(product.originalPrice as any) > parseFloat(product.price as any) && (
+                        <span className="font-mono-street text-[10px] tracking-wide text-zinc-400 line-through">
+                          {formatPrice(product.originalPrice)}
+                        </span>
+                      )}
+                      <span className={`font-mono-street font-semibold text-[12px] tracking-wide ${product.originalPrice && parseFloat(product.originalPrice as any) > parseFloat(product.price as any) ? 'text-zinc-900' : 'text-zinc-500'}`}>
+                        {formatPrice(product.price)}
+                      </span>
+                    </div>
 
                     <div className="flex items-center gap-1.5">
                       {product.colors?.map((c, i) => (

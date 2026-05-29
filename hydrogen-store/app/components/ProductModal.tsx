@@ -647,9 +647,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
 
             {/* CTA */}
             <div className="px-5 py-4 flex flex-col gap-3">
-              <div className="flex items-center justify-between text-[10px] text-zinc-400 tracking-wide uppercase">
-                <span>Free returns</span>
-                <span>·</span>
+              <div className="flex items-center justify-center text-[10px] text-zinc-400 tracking-wide uppercase">
                 <span>Secure checkout</span>
               </div>
 
@@ -711,8 +709,14 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
             </div>
           </div>
 
+          {/* ── Brand mark ── */}
+          <div className="flex items-center gap-2 mt-5 mb-1 px-1">
+            <img src="images/logo.png" alt="Apricity" className="h-5 w-5 object-contain opacity-60" />
+            <span className="font-mono-street text-[9px] tracking-[0.3em] uppercase text-zinc-400">Apricity Officials</span>
+          </div>
+
           {/* ── ACCORDION SECTIONS ── */}
-          <div className="mt-4 border-t border-zinc-100">
+          <div className="mt-2 border-t border-zinc-100">
             {([
               {
                 id: 'audience',
