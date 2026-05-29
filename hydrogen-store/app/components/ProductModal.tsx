@@ -470,7 +470,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
       onClick={onClose}
     >
       <div 
-        className="relative bg-white w-full max-w-5xl h-auto lg:h-[90vh] flex flex-col lg:flex-row overflow-visible lg:overflow-hidden rounded-3xl shadow-2xl my-4 lg:my-0"
+        className="relative bg-white w-full max-w-5xl h-[95vh] lg:h-[90vh] flex flex-col lg:flex-row overflow-hidden rounded-3xl shadow-2xl my-4 lg:my-0"
         onClick={(e) => e.stopPropagation()}
       >
 
@@ -505,7 +505,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
         </div>
 
         {/* ── RIGHT: centred layout ── */}
-        <div className="w-full lg:w-1/2 flex flex-col justify-start lg:justify-center px-8 py-10 gap-6 overflow-visible lg:overflow-y-auto">
+        <div className="w-full lg:w-1/2 flex flex-col justify-start px-8 py-10 gap-6 overflow-y-auto max-h-[90vh] lg:max-h-full">
 
           {/* Title + price */}
           <div className="flex flex-col gap-2">
