@@ -712,14 +712,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
             </div>
           </div>
 
-          {/* ── APRICITY LOGO ── */}
-          <div className="flex items-center justify-center py-2">
-            <img
-              src="/images/logo.png"
-              alt="Apricity"
-              className="h-6 w-6 object-contain opacity-20"
-            />
-          </div>
+
 
           {/* ── ACCORDION SECTIONS ── */}
           <div className="mt-4 border-t border-zinc-100">
