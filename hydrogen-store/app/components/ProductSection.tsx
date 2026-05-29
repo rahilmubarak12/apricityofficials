@@ -328,8 +328,12 @@ export const ProductSection = React.memo(({
                         return colorNames.slice(0, 4).map((name, i) => (
                           <span
                             key={i}
-                            className="w-3 h-3 rounded-full border border-zinc-300 shadow-sm"
-                            style={{ backgroundColor: toCSS(name) }}
+                            className="w-5 h-5 rounded-full shadow-sm flex-shrink-0"
+                            style={{
+                              backgroundColor: toCSS(name),
+                              border: '2px solid #e4e4e7',
+                              outline: '1px solid rgba(0,0,0,0.08)',
+                            }}
                             title={name}
                           />
                         ));
