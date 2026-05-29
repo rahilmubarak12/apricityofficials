@@ -148,6 +148,75 @@ const PRODUCTS_QUERY = `#graphql
 // Fetch ALL pages from Shopify so size charts (and any future pages) are always up-to-date.
 // When the client creates a new size chart page in Shopify, it will automatically be available
 // on the next page load — no code changes or redeployment needed.
+const NEW_DROPS_QUERY = `#graphql
+  query getNewDrops {
+    collection(handle: "new-drops") {
+      products(first: 50) {
+        edges {
+          node {
+            id
+            handle
+            title
+            description
+            descriptionHtml
+            tags
+            attentionSeekers: metafield(namespace: "custom", key: "attention_seekers") { value }
+            attentionSeekers2: metafield(namespace: "custom", key: "attention_style_seekers") { value }
+            styleSeekers: metafield(namespace: "custom", key: "style_seekers") { value }
+            sizeFit: metafield(namespace: "custom", key: "size_fit") { value }
+            sizeFit2: metafield(namespace: "custom", key: "size_and_fit") { value }
+            careInstructions: metafield(namespace: "custom", key: "care_instructions") { value }
+            takeCare: metafield(namespace: "custom", key: "take_care_of_me") { value }
+            sizeChartHandle: metafield(namespace: "custom", key: "size_chart_handle") { value }
+            collections(first: 10) {
+              edges {
+                node {
+                  id
+                  title
+                  handle
+                }
+              }
+            }
+            priceRange {
+              minVariantPrice {
+                amount
+                currencyCode
+              }
+            }
+            compareAtPriceRange {
+              minVariantPrice {
+                amount
+              }
+            }
+            images(first: 5) {
+              edges {
+                node {
+                  url
+                  altText
+                }
+              }
+            }
+            variants(first: 10) {
+              edges {
+                node {
+                  id
+                  title
+                  availableForSale
+                  quantityAvailable
+                  selectedOptions {
+                    name
+                    value
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+` as const;
+
 const PAGES_QUERY = `#graphql
   query getPages {
     pages(first: 100) {
@@ -329,9 +398,13 @@ function mapShopifyProduct(node: any, pagesMap: Record<string, { title: string; 
 export async function loader({context}: LoaderFunctionArgs) {
   const { storefront } = context;
 
-  // Fetch products and all Shopify pages (size charts) in parallel on the server
-  const [productsData, pagesData] = await Promise.all([
+  // Fetch products, new-drops collection, and all Shopify pages in parallel
+  const [productsData, newDropsData, pagesData] = await Promise.all([
     storefront.query(PRODUCTS_QUERY),
+    storefront.query(NEW_DROPS_QUERY).catch((err: any) => {
+      console.warn('Failed to fetch new-drops collection:', err);
+      return null;
+    }),
     storefront.query(PAGES_QUERY).catch((err: any) => {
       console.warn('Failed to fetch pages, falling back to static size charts:', err);
       return null;
@@ -339,6 +412,16 @@ export async function loader({context}: LoaderFunctionArgs) {
   ]);
 
   const rawProducts = productsData?.products?.edges?.map((e: any) => e.node) || [];
+
+  // Merge new-drops products in — ensures all collection members are present
+  // regardless of where they fall in the store's overall product list
+  const newDropNodes: any[] = newDropsData?.collection?.products?.edges?.map((e: any) => e.node) || [];
+  const existingIds = new Set(rawProducts.map((p: any) => p.id));
+  for (const node of newDropNodes) {
+    if (!existingIds.has(node.id)) {
+      rawProducts.push(node);
+    }
+  }
 
   // Build a lookup of all Shopify pages by handle
   const pagesMap: Record<string, { title: string; body: string }> = {};
