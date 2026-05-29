@@ -198,14 +198,15 @@ function mapShopifyCollections(node: any): Collection[] {
   for (const { node: col } of shopifyCollections) {
     const handle = col.handle?.toLowerCase() ?? '';
     const title = col.title?.toLowerCase() ?? '';
-    if (handle === 'new-drops' || title === 'new drops') collections.push('new-drops');
+    // new-drops: ONLY from Shopify collection membership, never from tags
+    if (handle === 'new-drops' || title === 'new drops' || title === 'new drops') collections.push('new-drops');
     if (handle === 'summer-drop' || title === 'summer drop') collections.push('summer-drop');
     if (handle === 'heavyweight-essentials' || title === 'heavyweight essentials') collections.push('heavyweight-essentials');
     if (handle === 'limited-run' || title === 'limited run') collections.push('limited-run');
     if (handle === 'sale' || title === 'sale') collections.push('sale');
   }
 
-  if (lowerTags.includes('new-drops') || lowerTags.includes('new drops')) collections.push('new-drops');
+  // Tags still apply for other collections, but NOT new-drops
   if (lowerTags.includes('summer-drop') || lowerTags.includes('summer drop')) collections.push('summer-drop');
   if (lowerTags.includes('heavyweight-essentials') || lowerTags.includes('heavyweight essentials')) collections.push('heavyweight-essentials');
   if (lowerTags.includes('limited-run') || lowerTags.includes('limited run')) collections.push('limited-run');
@@ -261,7 +262,7 @@ function mapShopifyProduct(node: any, pagesMap: Record<string, { title: string; 
   const handle: string = node.handle ?? '';
 
   const collections = mapShopifyCollections(node);
-  const primaryCollection = collections[0] ?? 'new-drops';
+  const primaryCollection = collections[0] ?? 'all';
 
   // Look up scraped accordion details by product handle
   const scraped = (shopifyProductDetails as Record<string, any>)[handle] ?? null;
