@@ -97,7 +97,7 @@ const PRODUCTS_QUERY = `#graphql
           careInstructions: metafield(namespace: "custom", key: "care_instructions") { value }
           takeCare: metafield(namespace: "custom", key: "take_care_of_me") { value }
           sizeChartHandle: metafield(namespace: "custom", key: "size_chart_handle") { value }
-          collections(first: 10) {
+          collections(first: 30) {
             edges {
               node {
                 id
@@ -168,7 +168,7 @@ const NEW_DROPS_QUERY = `#graphql
             careInstructions: metafield(namespace: "custom", key: "care_instructions") { value }
             takeCare: metafield(namespace: "custom", key: "take_care_of_me") { value }
             sizeChartHandle: metafield(namespace: "custom", key: "size_chart_handle") { value }
-            collections(first: 10) {
+            collections(first: 30) {
               edges {
                 node {
                   id
