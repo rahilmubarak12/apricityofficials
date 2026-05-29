@@ -362,6 +362,11 @@ shop-pay-button {
 /* ── Jost: global site font ── */
 body,
 html,
-* {
-  font-family: 'Jost', sans-serif;
+*,
+.font-heading,
+.font-mono-street,
+.font-sans,
+.font-serif,
+.font-mono {
+  font-family: 'Jost', sans-serif !important;
 }
