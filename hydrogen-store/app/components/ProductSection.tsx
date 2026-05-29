@@ -282,13 +282,13 @@ export const ProductSection = React.memo(({
 
                   <div className="flex items-center justify-between mt-1 pt-2 border-t border-zinc-100">
 
-                    <div className="flex flex-col gap-0.5">
-                      {product.originalPrice && parseFloat(product.originalPrice as any) > parseFloat(product.price as any) && (
+                      <div className="flex flex-col gap-0.5">
+                      {product.originalPrice && Number(product.originalPrice) > 0 && Number(product.originalPrice) > Number(product.price) && (
                         <span className="font-mono-street text-[10px] tracking-wide text-zinc-400 line-through">
                           {formatPrice(product.originalPrice)}
                         </span>
                       )}
-                      <span className={`font-mono-street font-semibold text-[12px] tracking-wide ${product.originalPrice && parseFloat(product.originalPrice as any) > parseFloat(product.price as any) ? 'text-zinc-900' : 'text-zinc-500'}`}>
+                      <span className="font-mono-street font-semibold text-[12px] tracking-wide text-zinc-500">
                         {formatPrice(product.price)}
                       </span>
                     </div>
