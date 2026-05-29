@@ -173,14 +173,9 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="h-10 w-10 sm:h-14 sm:w-14 lg:h-16 lg:w-16 object-contain transition-all" 
             />
             
-            <div className="flex flex-col items-start justify-center text-left">
-              <span className={`font-heading font-extrabold text-lg sm:text-2xl lg:text-3xl tracking-[0.22em] uppercase transition-all leading-none ${logoColor}`}>
-                APRICITY
-              </span>
-              <span className="font-mono-street text-[6px] sm:text-[9px] tracking-[0.55em] text-zinc-400 uppercase font-light mt-1 ml-0.5 transition-all leading-none">
-                OFFICIALS
-              </span>
-            </div>
+            <span className={`transition-all leading-none text-2xl sm:text-3xl lg:text-4xl ${logoColor}`} style={{ fontFamily: 'DreamAvenue, sans-serif' }}>
+              APRICITY
+            </span>
           </Link>
 
           {/* RIGHT ICONS */}

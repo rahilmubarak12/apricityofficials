@@ -1,4 +1,10 @@
 @font-face {
+  font-family: 'DreamAvenue';
+  font-display: swap;
+  font-weight: 400;
+  src: url('./fonts/Dream-Avenue.ttf') format('truetype');
+}
+@font-face {
   font-family: 'IBMPlexSerif';
   font-display: swap;
   font-weight: 400;
