@@ -648,68 +648,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
 
             <div className="h-px bg-zinc-100 mx-5" />
 
-            {/* CTA */}
-            <div className="px-5 py-4 flex flex-col gap-3">
-              <div className="flex items-center justify-center text-[10px] text-zinc-400 tracking-wide uppercase">
-                <span>Secure checkout</span>
-              </div>
-
-              {/* Quantity selector */}
-              {canAddToCart && (
-                <div className="flex items-center justify-between border border-zinc-200 bg-white rounded-xl h-12 w-full px-4 mt-1">
-                  <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Quantity</span>
-                  <div className="flex items-center gap-4">
-                    <button
-                      type="button"
-                      onClick={handleDecrease}
-                      disabled={quantity <= 1}
-                      className="w-8 h-8 flex items-center justify-center text-zinc-400 hover:text-zinc-950 disabled:opacity-30 disabled:cursor-not-allowed transition-colors rounded-full hover:bg-zinc-50"
-                      aria-label="Decrease quantity"
-                    >
-                      <Minus size={14} />
-                    </button>
-                    <span className="font-mono-street text-sm text-zinc-950 font-bold min-w-[1.5rem] text-center">
-                      {quantity}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={handleIncrease}
-                      disabled={quantity >= maxStock}
-                      className="w-8 h-8 flex items-center justify-center text-zinc-400 hover:text-zinc-950 disabled:opacity-30 disabled:cursor-not-allowed transition-colors rounded-full hover:bg-zinc-50"
-                      aria-label="Increase quantity"
-                    >
-                      <Plus size={14} />
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              <button
-                onClick={handleAdd}
-                disabled={!canAddToCart}
-                className={`
-                  w-full py-4 rounded-xl text-sm font-semibold tracking-[0.1em] uppercase
-                  flex items-center justify-center gap-2.5
-                  transition-all duration-300
-                  ${canAddToCart
-                    ? isAdded
-                      ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200'
-                      : 'bg-zinc-900 text-white hover:bg-zinc-700 shadow-lg shadow-zinc-200 hover:shadow-xl hover:scale-[1.01] active:scale-[0.99]'
-                    : 'bg-zinc-100 text-zinc-400 cursor-not-allowed'
-                  }
-                `}
-              >
-                {isCompletelyOutOfStock ? (
-                  <><AlertCircle size={15} /> Out of Stock</>
-                ) : selectedVariantOutOfStock ? (
-                  <><AlertCircle size={15} /> Unavailable</>
-                ) : isAdded ? (
-                  <><span className="text-base leading-none">✓</span> Added to Cart</>
-                ) : (
-                  <><ShoppingBag size={15} /> Add to Cart</>
-                )}
-              </button>
-            </div>
           </div>
 
 
@@ -759,6 +697,68 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
                 )}
               </div>
             ))}
+          </div>
+
+          {/* ── CTA: Quantity + Add to Cart ── */}
+          <div className="mt-6 flex flex-col gap-3">
+            <div className="flex items-center justify-center text-[10px] text-zinc-400 tracking-wide uppercase">
+              <span>Secure checkout</span>
+            </div>
+
+            {canAddToCart && (
+              <div className="flex items-center justify-between border border-zinc-200 bg-white rounded-xl h-12 w-full px-4">
+                <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Quantity</span>
+                <div className="flex items-center gap-4">
+                  <button
+                    type="button"
+                    onClick={handleDecrease}
+                    disabled={quantity <= 1}
+                    className="w-8 h-8 flex items-center justify-center text-zinc-400 hover:text-zinc-950 disabled:opacity-30 disabled:cursor-not-allowed transition-colors rounded-full hover:bg-zinc-50"
+                    aria-label="Decrease quantity"
+                  >
+                    <Minus size={14} />
+                  </button>
+                  <span className="font-mono-street text-sm text-zinc-950 font-bold min-w-[1.5rem] text-center">
+                    {quantity}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleIncrease}
+                    disabled={quantity >= maxStock}
+                    className="w-8 h-8 flex items-center justify-center text-zinc-400 hover:text-zinc-950 disabled:opacity-30 disabled:cursor-not-allowed transition-colors rounded-full hover:bg-zinc-50"
+                    aria-label="Increase quantity"
+                  >
+                    <Plus size={14} />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <button
+              onClick={handleAdd}
+              disabled={!canAddToCart}
+              className={`
+                w-full py-4 rounded-xl text-sm font-semibold tracking-[0.1em] uppercase
+                flex items-center justify-center gap-2.5
+                transition-all duration-300
+                ${canAddToCart
+                  ? isAdded
+                    ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200'
+                    : 'bg-zinc-900 text-white hover:bg-zinc-700 shadow-lg shadow-zinc-200 hover:shadow-xl hover:scale-[1.01] active:scale-[0.99]'
+                  : 'bg-zinc-100 text-zinc-400 cursor-not-allowed'
+                }
+              `}
+            >
+              {isCompletelyOutOfStock ? (
+                <><AlertCircle size={15} /> Out of Stock</>
+              ) : selectedVariantOutOfStock ? (
+                <><AlertCircle size={15} /> Unavailable</>
+              ) : isAdded ? (
+                <><span className="text-base leading-none">✓</span> Added to Cart</>
+              ) : (
+                <><ShoppingBag size={15} /> Add to Cart</>
+              )}
+            </button>
           </div>
 
         </div>
