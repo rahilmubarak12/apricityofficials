@@ -20,6 +20,7 @@ import { SearchModal } from '~/components/SearchModal';
 import { Footer } from '~/components/Footer';
 import { SkeletonCard } from '~/components/ProductSection';
 import { RefundPolicy } from '~/components/RefundPolicy';
+import { DiscountPopup } from '~/components/DiscountPopup';
 import { CountrySelector, COUNTRIES } from '~/components/CountrySelector';
 import shopifyClient from '~/lib/shopify';
 import shopifyProductDetails from '~/data/shopify_product_details.json';
@@ -307,31 +308,7 @@ function mapShopifyProduct(node: any, pagesMap: Record<string, { title: string; 
     subCategory: mapSubCategory(tags, node.title),
     tags,
     images: images.length > 0 ? images : ['/placeholder.jpg'],
-    colors: (() => {
-      const colorMap: Record<string, string> = {
-        black: '#1a1a1a', white: '#f5f5f5', grey: '#9ca3af', gray: '#9ca3af',
-        beige: '#d4b896', cream: '#f0e8d8', brown: '#7c4f2f', navy: '#1e3a5f',
-        blue: '#2563eb', red: '#dc2626', green: '#16a34a', olive: '#6b7c2f',
-        khaki: '#c3a96b', sand: '#c2a97e', tan: '#c49a6c', pink: '#ec4899',
-        purple: '#7c3aed', orange: '#ea580c', yellow: '#ca8a04', charcoal: '#374151',
-        stone: '#a8a29e', camel: '#c19a6b', off_white: '#f5f0e8', ecru: '#ede8d5',
-      };
-      const colorVariants = node.variants.edges
-        .map(({ node: v }: any) => {
-          const colorOpt = v.selectedOptions?.find((o: any) =>
-            o.name.toLowerCase() === 'color' || o.name.toLowerCase() === 'colour'
-          );
-          return colorOpt ? colorOpt.value : null;
-        })
-        .filter(Boolean);
-      const unique = Array.from(new Set(colorVariants)) as string[];
-      if (unique.length === 0) return [{ name: 'Standard', hex: '#1a1a1a', image: images[0] ?? '' }];
-      return unique.map((colorName: string) => {
-        const key = colorName.toLowerCase().replace(/\s+/g, '_').replace(/-/g, '_');
-        const hex = colorMap[key] ?? colorMap[colorName.toLowerCase()] ?? '#1a1a1a';
-        return { name: colorName, hex, image: images[0] ?? '' };
-      });
-    })(),
+    colors: [{ name: 'Standard', hex: '#1a1a1a', image: images[0] ?? '' }],
     variants: mapVariants(node.variants.edges),
     fabricDetails: [],
     fitNotes: '',
@@ -884,6 +861,7 @@ export default function Homepage() {
           formatPrice={formatPrice}
         />
         <CountrySelector selectedCountry={selectedCountry} onSelectCountry={handleSelectCountry} />
+        <DiscountPopup />
       </div>
     </QueryClientProvider>
   );

@@ -118,6 +118,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                 Sale
               </button>
 
+              <a
+                href="/pages/the-rule"
+                className={`pb-1 relative transition-colors nav-link-hover ${textMuted} hover:text-current no-underline`}
+              >
+                The Rule
+              </a>
+
               {/* Desktop Contact Dropdown */}
               <div className="relative group flex items-center">
                 <button
@@ -232,6 +239,14 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               Sale
             </button>
+
+            <a
+              href="/pages/the-rule"
+              className="py-2 transition-colors text-zinc-400 hover:text-white no-underline"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              The Rule
+            </a>
 
             {/* Mobile Contact Info */}
             <div className="pt-6 border-t border-zinc-800 flex flex-col items-center gap-3">
