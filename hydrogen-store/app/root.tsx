@@ -180,8 +180,44 @@ function Layout({children}: {children?: React.ReactNode}) {
           />
         )}
         <Scripts />
-
-
+        {/* Shopify Inbox Chat */}
+        <script
+          type="module"
+          defer
+          async
+          data-button-color="#ffffff"
+          data-secondary-color="#4d5b78"
+          data-ternary-color="#c7d0e1"
+          data-icon="chat_bubble"
+          data-text="need_help"
+          data-position="bottom_right"
+          data-vertical-position="lowest"
+          data-shop-id="1pCn-Vq3ERsExEujygpVH1EGeQpgir0u8bMFDvWyE1k"
+          data-shop="cm33r3-3j.myshopify.com"
+          data-shop-domain="cm33r3-3j.myshopify.com"
+          src="https://cdn.shopify.com/extensions/7b10f934-10bb-4e07-8714-113f08b70f8c/inbox-1271/assets/shopifyChatV1Widget.js"
+        />
+        {/* Shopify Inbox Chat */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.shopifyInboxConfig = {
+                shop: 'cm33r3-3j.myshopify.com',
+              };
+              var s = document.createElement('script');
+              s.type = 'text/javascript';
+              s.async = true;
+              s.src = 'https://cdn.shopify.com/shopifycloud/shopify-inbox/shopify-inbox.js';
+              document.head.appendChild(s);
+            `,
+          }}
+        />
+        {/* Crisp Live Chat */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.$crisp=[];window.CRISP_WEBSITE_ID="295057d0-5956-4bbb-a322-0771d1c958d6";(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();`,
+          }}
+        />
       </body>
     </html>
   );
