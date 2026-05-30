@@ -7,7 +7,7 @@ interface TheRuleProps {
 
 export const TheRule: React.FC<TheRuleProps> = ({ onBack }) => {
   return (
-    <div className="min-h-screen bg-[#faf9f7]">
+    <div className="min-h-screen bg-white">
 
       {/* Back button */}
       <div className="max-w-6xl mx-auto px-6 md:px-16 pt-8">
@@ -21,34 +21,34 @@ export const TheRule: React.FC<TheRuleProps> = ({ onBack }) => {
       </div>
 
       {/* Main content */}
-      <div className="max-w-6xl mx-auto px-6 md:px-16 py-12 md:py-20">
+      <div className="max-w-6xl mx-auto px-6 md:px-16 py-12 md:py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
 
-          {/* LEFT: Image */}
+          {/* LEFT: Image — tall */}
           <div className="w-full">
             <img
               src="/images/rule.png"
               alt="The Three-Year Rule"
-              className="w-full h-auto object-cover rounded-sm"
+              className="w-full object-cover rounded-sm"
+              style={{ height: '75vh', minHeight: '500px' }}
             />
           </div>
 
-          {/* RIGHT: Text */}
-          <div className="flex flex-col gap-8">
-
+          {/* RIGHT: Text — roughly half the image height, scrollable if needed */}
+          <div
+            className="flex flex-col gap-6 overflow-y-auto pr-1"
+            style={{ maxHeight: '37.5vh', minHeight: '250px' }}
+          >
             <div>
-              <span className="font-mono-street text-[11px] uppercase tracking-[0.25em] text-zinc-400 block mb-4">
-                The Philosophy
-              </span>
-              <h1 className="font-heading font-extrabold text-4xl md:text-5xl text-[#1a1a1a] uppercase leading-tight tracking-tight mb-2">
+              <h1 className="font-heading font-extrabold text-3xl md:text-4xl text-[#1a1a1a] uppercase leading-tight tracking-tight mb-1">
                 The Three-Year Rule
               </h1>
-              <span className="font-mono-street font-bold text-sm tracking-[0.2em] text-[#1a1a1a] uppercase">
+              <span className="font-mono-street font-bold text-xs tracking-[0.2em] text-[#1a1a1a] uppercase">
                 APY
               </span>
             </div>
 
-            <div className="space-y-4 text-zinc-600 text-[15px] leading-relaxed font-light">
+            <div className="space-y-4 text-[#1a1a1a] text-[15px] leading-relaxed">
               <p>
                 Apricity exists because we rarely agree. Unusual for a brand? Exactly. For years, our differences have shaped everything we build. One of us instinctively edits. The other instinctively pushes. We don't settle quickly. We don't meet in the middle just to move forward.
               </p>
@@ -67,12 +67,12 @@ export const TheRule: React.FC<TheRuleProps> = ({ onBack }) => {
               <p>
                 If it survives disagreement — and it survives time — it earns the name.
               </p>
-              <p className="font-medium text-[#1a1a1a]">
+              <p className="font-semibold">
                 APRICITY is not the result of agreement. It's the result of what survives it.
               </p>
             </div>
 
-            <div className="pt-4 border-t border-zinc-200">
+            <div className="pt-2 border-t border-zinc-200">
               <button
                 onClick={onBack}
                 className="inline-block bg-[#1a1a1a] text-white font-mono-street text-xs uppercase tracking-[0.2em] px-8 py-4 hover:bg-zinc-700 transition-colors"
@@ -80,8 +80,8 @@ export const TheRule: React.FC<TheRuleProps> = ({ onBack }) => {
                 Shop the Collection
               </button>
             </div>
-
           </div>
+
         </div>
       </div>
 
