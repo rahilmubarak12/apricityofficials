@@ -17,7 +17,6 @@ import {
   type ShouldRevalidateFunction,
 } from '@remix-run/react';
 import {
-  useNonce,
   Analytics,
   getShopAnalytics,
   getSeoMeta,
@@ -145,7 +144,6 @@ export const meta = ({data}: MetaArgs<typeof loader>) => {
 };
 
 function Layout({children}: {children?: React.ReactNode}) {
-  const nonce = useNonce();
   const data = useRouteLoaderData<typeof loader>('root');
   const locale = data?.selectedLocale ?? DEFAULT_LOCALE;
 
@@ -173,7 +171,7 @@ function Layout({children}: {children?: React.ReactNode}) {
         ) : (
           children
         )}
-        <ScrollRestoration nonce={nonce} />
+        <ScrollRestoration />
         {data?.publicEnv && (
           <script
             dangerouslySetInnerHTML={{
@@ -181,7 +179,7 @@ function Layout({children}: {children?: React.ReactNode}) {
             }}
           />
         )}
-        <Scripts nonce={nonce} />
+        <Scripts />
         {/* Crisp Live Chat */}
         <script
           dangerouslySetInnerHTML={{
