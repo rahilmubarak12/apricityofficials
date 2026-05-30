@@ -20,6 +20,7 @@ import { SearchModal } from '~/components/SearchModal';
 import { Footer } from '~/components/Footer';
 import { SkeletonCard } from '~/components/ProductSection';
 import { RefundPolicy } from '~/components/RefundPolicy';
+import { TheRule } from '~/components/TheRule';
 import { DiscountPopup } from '~/components/DiscountPopup';
 import { CountrySelector, COUNTRIES } from '~/components/CountrySelector';
 import shopifyClient from '~/lib/shopify';
@@ -645,6 +646,7 @@ export default function Homepage() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [activeProductModal, setActiveProductModal] = useState<Product | null>(null);
   const [showRefundPolicy, setShowRefundPolicy] = useState(false);
+  const [showTheRule, setShowTheRule] = useState(false);
 
   const [selectedCountry, setSelectedCountry] = useState<string>('SA');
   const [exchangeRates, setExchangeRates] = useState<Record<string, number>>({ SAR: 1.0 });
@@ -879,10 +881,13 @@ export default function Homepage() {
           activeCategory={selectedCategory}
           activeCollection={selectedCollection}
           onOpenSearch={() => setIsSearchOpen(true)}
+          onOpenTheRule={() => { setShowTheRule(true); window.scrollTo({ top: 0 }); }}
         />
 
         {showRefundPolicy ? (
           <RefundPolicy onBack={() => { setShowRefundPolicy(false); window.scrollTo({ top: 0 }); }} />
+        ) : showTheRule ? (
+          <TheRule onBack={() => { setShowTheRule(false); window.scrollTo({ top: 0 }); }} />
         ) : (
           <>
             <HeroVideo

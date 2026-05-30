@@ -11,6 +11,7 @@ interface NavbarProps {
   activeCategory: string;
   activeCollection: string;
   onOpenSearch: () => void;
+  onOpenTheRule: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -20,7 +21,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onSelectCollection,
   activeCategory,
   activeCollection,
-  onOpenSearch
+  onOpenSearch,
+  onOpenTheRule
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -119,7 +121,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
 
               <a
-                href="/pages/the-rule"
+                href="#" onClick={(e) => { e.preventDefault(); onOpenTheRule(); }}
                 className={`pb-1 relative transition-colors nav-link-hover ${textMuted} hover:text-current no-underline`}
               >
                 The Rule
@@ -236,7 +238,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             <a
-              href="/pages/the-rule"
+              href="#" onClick={(e) => { e.preventDefault(); onOpenTheRule(); }}
               className="py-2 transition-colors text-zinc-400 hover:text-white no-underline"
               onClick={() => setMobileMenuOpen(false)}
             >
