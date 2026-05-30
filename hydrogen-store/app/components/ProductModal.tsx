@@ -439,7 +439,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
     return formatPrice(amount);
   }, [selectedVariant, formatPrice]);
 
-  const maxStock = typeof selectedQty === 'number' ? selectedQty : 99;
+  const maxStock = typeof selectedQty === 'number' ? selectedQty : 10;
 
   // Reset quantity when variant/size/color changes
   useEffect(() => {
