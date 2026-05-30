@@ -876,8 +876,8 @@ export default function Homepage() {
         <Navbar
           cartCount={cart.reduce((sum, item) => sum + item.quantity, 0)}
           onOpenCart={() => setIsCartOpen(true)}
-          onSelectCategory={(cat) => { setSelectedCategory(cat); setShowRefundPolicy(false); scrollToCatalog(); }}
-          onSelectCollection={(col) => { setSelectedCollection(col); setShowRefundPolicy(false); scrollToCatalog(); }}
+          onSelectCategory={(cat) => { setSelectedCategory(cat); setShowRefundPolicy(false); setShowTheRule(false); scrollToCatalog(); }}
+          onSelectCollection={(col) => { setSelectedCollection(col); setShowRefundPolicy(false); setShowTheRule(false); scrollToCatalog(); }}
           activeCategory={selectedCategory}
           activeCollection={selectedCollection}
           onOpenSearch={() => setIsSearchOpen(true)}
@@ -916,8 +916,8 @@ export default function Homepage() {
         )}
 
         <Footer
-          onSelectCategory={(cat) => { setSelectedCategory(cat); setShowRefundPolicy(false); scrollToCatalog(); }}
-          onSelectCollection={(col) => { setSelectedCollection(col); setShowRefundPolicy(false); scrollToCatalog(); }}
+          onSelectCategory={(cat) => { setSelectedCategory(cat); setShowRefundPolicy(false); setShowTheRule(false); scrollToCatalog(); }}
+          onSelectCollection={(col) => { setSelectedCollection(col); setShowRefundPolicy(false); setShowTheRule(false); scrollToCatalog(); }}
           onOpenRefundPolicy={() => { setShowRefundPolicy(true); window.scrollTo({ top: 0 }); }}
         />
         <CartDrawer
