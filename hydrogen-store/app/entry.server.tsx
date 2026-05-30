@@ -16,25 +16,13 @@ export default async function handleRequest(
       checkoutDomain: context.env.PUBLIC_CHECKOUT_DOMAIN,
       storeDomain: context.env.PUBLIC_STORE_DOMAIN,
     },
-    scriptSrc: [
-      'self',
-      'unsafe-inline',
-      'https://cdn.shopify.com',
-      'https://shopify.com',
-      'https://www.google-analytics.com',
-      'https://www.googletagmanager.com',
-      'https://client.crisp.chat',
-      ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:*'] : []),
-    ],
-    frameSrc: [
-      'https://game.crisp.chat',
-    ],
-    connectSrc: [
-      'self',
-      'https://client.crisp.chat',
-      'https://*.crisp.chat',
-      'wss://*.crisp.chat',
-    ],
+    scriptSrc: ["*", "'unsafe-inline'", "'unsafe-eval'"],
+    styleSrc: ["*", "'unsafe-inline'"],
+    fontSrc: ["*"],
+    imgSrc: ["*", "data:", "blob:"],
+    connectSrc: ["*"],
+    frameSrc: ["*"],
+    mediaSrc: ["*"],
   });
 
   const body = await renderToReadableStream(
