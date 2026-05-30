@@ -18,22 +18,22 @@ export default async function handleRequest(
     },
     scriptSrc: [
       'self',
+      'unsafe-inline',
       'https://cdn.shopify.com',
       'https://shopify.com',
       'https://www.google-analytics.com',
       'https://www.googletagmanager.com',
-      'https://embed.tawk.to',
-      'https://*.tawk.to',
+      'https://client.crisp.chat',
       ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:*'] : []),
     ],
     frameSrc: [
-      'https://tawk.to',
-      'https://*.tawk.to',
+      'https://game.crisp.chat',
     ],
     connectSrc: [
       'self',
-      'https://*.tawk.to',
-      'wss://*.tawk.to',
+      'https://client.crisp.chat',
+      'https://*.crisp.chat',
+      'wss://*.crisp.chat',
     ],
   });
 
