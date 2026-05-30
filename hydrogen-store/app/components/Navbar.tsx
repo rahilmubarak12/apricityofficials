@@ -104,7 +104,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   activeCollection === 'new-drops'
                     ? 'font-bold border-b border-current ' + textColor
                     : textMuted + ' hover:' + textColor
-                }`}
+                } whitespace-nowrap`}
               >
                 New Drops
               </button>
@@ -124,7 +124,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               <a
                 href="#" onClick={(e) => { e.preventDefault(); onOpenTheRule(); }}
-                className={`pb-1 relative transition-colors nav-link-hover ${textMuted} hover:text-current no-underline`}
+                className={`pb-1 relative transition-colors nav-link-hover ${textMuted} hover:text-current no-underline whitespace-nowrap`}
               >
                 The Rule
               </a>
