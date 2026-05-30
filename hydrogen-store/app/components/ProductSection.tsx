@@ -64,6 +64,12 @@ export const ProductSection = React.memo(({
         if (!matchesCollection) return false;
       }
 
+      // Hide completely out-of-stock products from New Drops
+      if (selectedCollection === 'new-drops') {
+        const allOOS = p.variants && p.variants.length > 0 && p.variants.every((v: any) => v.stock <= 0);
+        if (allOOS) return false;
+      }
+
       if (activeSubcategory !== 'all') {
         const matchesSubcategoryProperty = p.subCategory === activeSubcategory;
         // FIX 5: p.tags is now preserved on the product, so this filter actually works
@@ -307,21 +313,53 @@ export const ProductSection = React.memo(({
 
                         // CSS named colors and common mappings for Shopify color option values
                         const toCSS = (name: string): string => {
+                          const key = name.toLowerCase().replace(/[^a-z0-9]/g, '');
                           const map: Record<string, string> = {
-                            black: '#1a1a1a', white: '#f5f5f5', cream: '#f5f0e8',
-                            beige: '#d4b896', sand: '#c2a882', brown: '#6b4226',
-                            camel: '#c19a6b', khaki: '#b8a87a', olive: '#6b7c41',
-                            navy: '#1a2744', blue: '#2563eb', lightblue: '#93c5fd',
-                            sky: '#7dd3fc', teal: '#0d9488', green: '#16a34a',
-                            sage: '#7c9e6e', mint: '#a7f3d0', red: '#dc2626',
-                            burgundy: '#7f1d1d', wine: '#6b1d2e', pink: '#f9a8d4',
-                            blush: '#fbc8c8', purple: '#7c3aed', lavender: '#c4b5fd',
+                            // Neutrals
+                            black: '#1a1a1a', white: '#f5f5f5', offwhite: '#f8f4ee',
+                            cream: '#f5f0e8', ivory: '#f8f4e8', ecru: '#f0e6d3',
+                            beige: '#d4b896', linen: '#e8dcc8', sand: '#c2a882',
+                            stone: '#a8a29e', taupe: '#b5a99a', nude: '#e8c9a0',
                             grey: '#9ca3af', gray: '#9ca3af', charcoal: '#374151',
-                            stone: '#a8a29e', taupe: '#b5a99a', yellow: '#facc15',
-                            mustard: '#d97706', orange: '#f97316', rust: '#c2410c',
-                            coral: '#fb7185', ecru: '#f0e6d3', ivory: '#f8f4e8',
+                            onyx: '#1a1a1a', slate: '#64748b',
+                            // Browns / Warm
+                            brown: '#6b4226', camel: '#c19a6b', caramel: '#c68642',
+                            khaki: '#b8a87a', tan: '#c4a882', chocolate: '#3d1c02',
+                            mocha: '#6b3a2a', walnut: '#5c3317',
+                            // Yellows / Golds
+                            yellow: '#facc15', mustard: '#d97706', gold: '#d4af37',
+                            buttercream: '#f5e6c8', butter: '#f5e6a3', lemon: '#fef08a',
+                            // Oranges / Reds
+                            orange: '#f97316', rust: '#c2410c', coral: '#fb7185',
+                            red: '#dc2626', burgundy: '#7f1d1d', wine: '#6b1d2e',
+                            cherry: '#990000', scarlet: '#ff2400', tomato: '#ff6347',
+                            // Pinks
+                            pink: '#f9a8d4', blush: '#fbc8c8', blushpink: '#f4b8c1',
+                            softpink: '#f9c5ce', babypink: '#f9c5d0', dustypink: '#d4a0a0',
+                            rosepink: '#f48fb1', hotpink: '#ff69b4', mauve: '#d4a5a5',
+                            rose: '#f43f5e', fuchsia: '#d946ef', magenta: '#c026d3',
+                            // Purples
+                            purple: '#7c3aed', lavender: '#c4b5fd', violet: '#7c3aed',
+                            lilac: '#c8a2c8', plum: '#673147', indigo: '#4338ca',
+                            // Blues
+                            blue: '#2563eb', navy: '#1a2744', royal: '#4169e1',
+                            cobalt: '#0047ab', sky: '#7dd3fc', lightblue: '#93c5fd',
+                            babyblue: '#89cff0', powder: '#b0d4e8', denim: '#1560bd',
+                            // Greens
+                            green: '#16a34a', olive: '#6b7c41', sage: '#7c9e6e',
+                            mint: '#a7f3d0', teal: '#0d9488', forest: '#228b22',
+                            emerald: '#059669', hunter: '#355e3b', army: '#4b5320',
+                            // Others
+                            white: '#f5f5f5',
                           };
-                          return map[name.toLowerCase().replace(/\s+/g, '')] ?? name.toLowerCase();
+                          // Try exact key match first, then try CSS named color via a test element
+                          if (map[key]) return map[key];
+                          // If it looks like a valid CSS color word, pass it through
+                          const css = new Option().style;
+                          css.color = name.toLowerCase();
+                          if (css.color !== '') return name.toLowerCase();
+                          // Fallback: mid-grey so it's visible, not white
+                          return '#9ca3af';
                         };
 
                         if (!colorNames.length) return null;
