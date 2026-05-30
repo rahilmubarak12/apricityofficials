@@ -62,7 +62,9 @@ const findVariant = (variants: any[], size: string, color: string | null) =>
 const getVariantQty = (variant: any): number | null => {
   if (!variant) return null;
   if (typeof variant.quantityAvailable === 'number') return variant.quantityAvailable;
-  return null; // field not present → show no qty label
+  // fallback: local products.ts shape uses { stock: number }
+  if (typeof variant.stock === 'number') return variant.stock;
+  return null;
 };
 
 const isVariantInStock = (variant: any): boolean => {
