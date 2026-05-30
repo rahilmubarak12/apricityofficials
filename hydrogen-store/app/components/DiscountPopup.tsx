@@ -7,23 +7,7 @@ export const DiscountPopup: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  useEffect(() => {
-    // Only auto-show once per browser session for first-time visitors
-    const alreadyShown = sessionStorage.getItem(STORAGE_KEY);
-    if (alreadyShown) return;
 
-    const handleLoad = () => {
-      sessionStorage.setItem(STORAGE_KEY, 'true');
-      setVisible(true);
-    };
-
-    if (document.readyState === 'complete') {
-      handleLoad();
-    } else {
-      window.addEventListener('load', handleLoad, { once: true });
-      return () => window.removeEventListener('load', handleLoad);
-    }
-  }, []);
 
   const handleCopy = () => {
     navigator.clipboard.writeText('APY-15').then(() => {
