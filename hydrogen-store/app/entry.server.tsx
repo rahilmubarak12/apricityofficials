@@ -22,7 +22,18 @@ export default async function handleRequest(
       'https://shopify.com',
       'https://www.google-analytics.com',
       'https://www.googletagmanager.com',
+      'https://embed.tawk.to',
+      'https://*.tawk.to',
       ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:*'] : []),
+    ],
+    frameSrc: [
+      'https://tawk.to',
+      'https://*.tawk.to',
+    ],
+    connectSrc: [
+      'self',
+      'https://*.tawk.to',
+      'wss://*.tawk.to',
     ],
   });
 
