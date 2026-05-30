@@ -69,10 +69,26 @@ export const getProducts = async () => {
 };
 
 export const getProductStock = async (shopifyProductId: string) => {
-  const { data } = await client.request(PRODUCT_STOCK_QUERY, {
-    variables: { id: shopifyProductId },
+  const domain = typeof window !== 'undefined'
+    ? (window as any).ENV?.PUBLIC_STORE_DOMAIN || 'cm33r3-3j.myshopify.com'
+    : 'cm33r3-3j.myshopify.com';
+  const token = typeof window !== 'undefined'
+    ? (window as any).ENV?.PUBLIC_STOREFRONT_API_TOKEN || '1ecfa030b0d5cc92ad7d95875a8cddcd'
+    : '1ecfa030b0d5cc92ad7d95875a8cddcd';
+
+  const res = await fetch(`https://${domain}/api/2026-04/graphql.json`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Shopify-Storefront-Access-Token': token,
+    },
+    body: JSON.stringify({
+      query: PRODUCT_STOCK_QUERY,
+      variables: { id: shopifyProductId },
+    }),
   });
-  return data.product;
+  const json = await res.json();
+  return json.data?.product ?? null;
 };
 
 // Add to cart and return the checkout URL
