@@ -882,6 +882,7 @@ export default function Homepage() {
           activeCollection={selectedCollection}
           onOpenSearch={() => setIsSearchOpen(true)}
           onOpenTheRule={() => { setShowTheRule(true); window.scrollTo({ top: 0 }); }}
+          onGoHome={() => { setShowTheRule(false); setShowRefundPolicy(false); window.scrollTo({ top: 0 }); }}
         />
 
         {showRefundPolicy ? (

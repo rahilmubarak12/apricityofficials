@@ -12,6 +12,7 @@ interface NavbarProps {
   activeCollection: string;
   onOpenSearch: () => void;
   onOpenTheRule: () => void;
+  onGoHome?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -22,7 +23,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   activeCategory,
   activeCollection,
   onOpenSearch,
-  onOpenTheRule
+  onOpenTheRule,
+  onGoHome
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -167,7 +169,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <Link
             to="/"
             className="flex flex-row items-center justify-center cursor-pointer select-none gap-3 sm:gap-4 no-underline"
-            onClick={() => { onSelectCategory('all'); onSelectCollection('all'); setMobileMenuOpen(false); }}
+            onClick={() => { onSelectCategory('all'); onSelectCollection('all'); setMobileMenuOpen(false); onGoHome?.(); }}
           >
             <img 
               src="/images/logo.png" 
