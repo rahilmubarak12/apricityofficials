@@ -18,7 +18,6 @@ export default async function handleRequest(
     },
     scriptSrc: [
       'self',
-      'unsafe-inline',
       'https://cdn.shopify.com',
       'https://shopify.com',
       'https://www.google-analytics.com',
@@ -27,30 +26,14 @@ export default async function handleRequest(
       'https://*.tawk.to',
       ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:*'] : []),
     ],
-    styleSrc: [
-      'self',
-      'unsafe-inline',
-      'https://cdn.shopify.com',
-      'https://fonts.googleapis.com',
-      'https://*.tawk.to',
-    ],
-    fontSrc: [
-      'self',
-      'https://fonts.gstatic.com',
-      'https://*.tawk.to',
-    ],
     frameSrc: [
       'https://tawk.to',
       'https://*.tawk.to',
     ],
     connectSrc: [
       'self',
-      'https://monorail-edge.shopifysvc.com',
-      'https://cdn.shopify.com',
-      'https://*.myshopify.com',
       'https://*.tawk.to',
       'wss://*.tawk.to',
-      'https://open.er-api.com',
     ],
   });
 
