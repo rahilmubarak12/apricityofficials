@@ -691,7 +691,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
                   className="w-full flex items-center justify-between py-4 text-left group"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-zinc-300 text-xs select-none font-light">‡</span>
+                    <img src="/images/logo.png" alt="" className="h-4 w-4 object-contain opacity-40" />
                     <span className="text-sm text-zinc-700 font-medium tracking-wide">{title}</span>
                   </div>
                   <span
