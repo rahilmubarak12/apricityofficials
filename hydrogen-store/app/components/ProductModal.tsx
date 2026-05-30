@@ -81,8 +81,13 @@ const isVariantInStock = (variant: any): boolean => {
  * Thresholds: ≤3 → critical, ≤10 → low, >10 → ok.
  * If qty is null (field not in API response) → returns null (show nothing).
  */
-const stockLabel = (qty: number | null): { text: string; level: 'ok' | 'low' | 'critical' } | null => {
-  if (qty === null) return null;
+const stockLabel = (qty: number | null, availableForSale?: boolean): { text: string; level: 'ok' | 'low' | 'critical' } | null => {
+  if (qty === null) {
+    // Fall back to availableForSale when quantityAvailable isn't in the response
+    if (availableForSale === false) return { text: 'Out of stock', level: 'critical' };
+    if (availableForSale === true)  return { text: 'In stock',     level: 'ok' };
+    return null;
+  }
   if (qty <= 0)  return { text: 'Out of stock',    level: 'critical' };
   if (qty === 1) return { text: 'Only 1 left',     level: 'critical' };
   if (qty <= 3)  return { text: `Only ${qty} left`, level: 'critical' };
@@ -403,7 +408,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
   // ------------------------------------------------------------------
 
   const selectedQty   = selectedVariant ? getVariantQty(selectedVariant) : null;
-  const selectedStock = selectedSize ? stockLabel(selectedQty) : null;
+  const selectedStock = selectedSize ? stockLabel(selectedQty, selectedVariant?.availableForSale) : null;
 
   // ------------------------------------------------------------------
   // Price
@@ -599,7 +604,8 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
                     const isActive = selectedSize === sz;
                     // qty comes straight from Shopify's quantityAvailable field
                     const qty      = sizeQtyMap[sz];
-                    const info     = stockLabel(qty);
+                    const sizeVariant = findVariant(liveVariants, sz, hasColors ? selectedColor : null);
+                    const info     = stockLabel(qty, sizeVariant?.availableForSale);
                     const isLow    = info?.level === 'low' || info?.level === 'critical';
 
                     return (
