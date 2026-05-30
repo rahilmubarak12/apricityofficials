@@ -1,4 +1,16 @@
 import { Link } from '@remix-run/react';
+import type { MetaFunction } from '@shopify/remix-oxygen';
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: 'The Three-Year Rule | APRICITY' },
+    {
+      name: 'description',
+      content:
+        'Apricity is built through tension and refined over time. The Three-Year Rule: before anything becomes APRICITY, we ask — will this still make sense three years from now?',
+    },
+  ];
+};
 
 export default function TheRulePage() {
   return (
@@ -22,6 +34,7 @@ export default function TheRulePage() {
           <div className="w-full">
             <img
               src="/images/rule.png"
+
               alt="The Three-Year Rule"
               className="w-full h-auto object-cover rounded-sm"
             />
