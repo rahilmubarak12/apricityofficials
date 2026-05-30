@@ -7,10 +7,10 @@ interface TheRuleProps {
 
 export const TheRule: React.FC<TheRuleProps> = ({ onBack }) => {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white pt-24">
 
       {/* Back button */}
-      <div className="max-w-6xl mx-auto px-6 md:px-16 pt-8">
+      <div className="max-w-6xl mx-auto px-6 md:px-16 pt-4">
         <button
           onClick={onBack}
           className="flex items-center gap-2 text-zinc-400 hover:text-zinc-700 transition-colors font-mono-street text-xs uppercase tracking-[0.2em]"
@@ -36,8 +36,7 @@ export const TheRule: React.FC<TheRuleProps> = ({ onBack }) => {
 
           {/* RIGHT: Text — roughly half the image height, scrollable if needed */}
           <div
-            className="flex flex-col gap-6 overflow-y-auto pr-1"
-            style={{ maxHeight: '37.5vh', minHeight: '250px' }}
+            className="flex flex-col gap-6"
           >
             <div>
               <h1 className="font-heading font-extrabold text-3xl md:text-4xl text-[#1a1a1a] uppercase leading-tight tracking-tight mb-1">
