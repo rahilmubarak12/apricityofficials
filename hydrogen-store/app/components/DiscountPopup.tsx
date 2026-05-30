@@ -37,9 +37,9 @@ export const DiscountPopup: React.FC = () => {
       {/* Sticky bottom bar — always visible */}
       <div
         onClick={() => setVisible(true)}
-        className="fixed bottom-0 left-0 right-0 z-[9998] bg-[#1a1a1a] text-white py-3 px-6 flex items-center justify-center gap-3 cursor-pointer hover:bg-zinc-800 transition-colors"
+        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[9998] bg-white text-[#1a1a1a] shadow-2xl rounded-2xl py-5 px-10 flex items-center justify-center gap-3 cursor-pointer hover:shadow-xl transition-all w-auto max-w-xs"
       >
-        <span className="font-mono-street text-[11px] uppercase tracking-[0.2em]">
+        <span className="font-mono-street text-[11px] uppercase tracking-[0.2em] whitespace-nowrap">
           Want 15% off? Tap here
         </span>
         <span className="text-base">👀</span>
