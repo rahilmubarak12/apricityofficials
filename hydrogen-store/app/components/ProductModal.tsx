@@ -565,7 +565,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
           )}
 
           {/* ── LUXURY SIZE + CTA PANEL ── */}
-          <div className="rounded-2xl border border-zinc-100 bg-zinc-50/80 overflow-hidden">
+          <div className="rounded-2xl border border-zinc-100 bg-zinc-50/80">
 
             {/* Sizes */}
             {availableSizes.length > 0 && (
