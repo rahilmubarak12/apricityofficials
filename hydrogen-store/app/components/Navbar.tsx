@@ -177,7 +177,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="h-10 w-10 sm:h-14 sm:w-14 lg:h-16 lg:w-16 object-contain transition-all" 
             />
             
-            <span className={`transition-all leading-none text-2xl sm:text-3xl lg:text-4xl ${logoColor}`} style={{ fontFamily: 'DreamAvenue, sans-serif' }}>
+            <span className={`transition-all leading-none text-2xl sm:text-3xl lg:text-4xl ${logoColor}`} style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, letterSpacing: '0.08em' }}>
               APRICITY
             </span>
           </Link>
