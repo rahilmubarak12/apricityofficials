@@ -46,7 +46,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const textColor = isLightNav ? 'text-[#1a1a1a]' : 'text-white';
   const textMuted = isLightNav ? 'text-zinc-500' : 'text-white/70';
-  const logoColor = isLightNav ? 'text-[#1a1a1a]' : 'text-white';
+  const logoColor = isLightNav ? 'text-[#4d5b78]' : 'text-white';
 
   return (
     <header className="fixed top-0 left-0 right-0 z-40">
@@ -177,7 +177,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="h-10 w-10 sm:h-14 sm:w-14 lg:h-16 lg:w-16 object-contain transition-all" 
             />
             
-            <span className={`transition-all leading-none text-2xl sm:text-3xl lg:text-4xl ${logoColor}`} style={{ fontFamily: 'DreamAvenue, sans-serif' }}>
+            <span className={`transition-all leading-none text-2xl sm:text-3xl lg:text-4xl ${logoColor}`} style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, letterSpacing: '0.15em' }}>
               APRICITY
             </span>
           </Link>

@@ -79,6 +79,7 @@ shop-pay-button {
 
   body {
     font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
     background-color: #faf9f7;
     color: #1a1a1a;
     @apply border-primary/10 antialiased;
