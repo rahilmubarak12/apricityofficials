@@ -172,7 +172,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => { onSelectCategory('all'); onSelectCollection('all'); setMobileMenuOpen(false); onGoHome?.(); }}
           >
             <img 
-              src={isLightNav ? "/images/logo-dark.png" : "/images/logo.png"} 
+              src="/images/logo.png" 
               alt="Apricity Logo" 
               className="h-10 w-10 sm:h-14 sm:w-14 lg:h-16 lg:w-16 object-contain transition-all" 
             />
