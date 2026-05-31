@@ -381,3 +381,10 @@ html,
   font-family: 'Jost', sans-serif !important;
   font-weight: 300 !important;
 }
+
+/* APRICITY navbar wordmark — must override global Jost/weight rules */
+.apricity-wordmark {
+  font-family: 'Cormorant', serif !important;
+  font-weight: 300 !important;
+  letter-spacing: 0.22em !important;
+}
