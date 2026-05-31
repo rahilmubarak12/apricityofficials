@@ -79,10 +79,18 @@ shop-pay-button {
 
   body {
     font-family: 'Montserrat', sans-serif;
-    font-weight: 300;
     background-color: #faf9f7;
     color: #1a1a1a;
+    font-weight: 300;
     @apply border-primary/10 antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 300;
+  }
+
+  p, span, a, li, button, input, label, td, th {
+    font-weight: 300;
   }
 
   html {
@@ -360,7 +368,7 @@ shop-pay-button {
 }
 
 
-/* ── Jost: global site font ── */
+/* ── Jost: global site font + thin weight everywhere ── */
 body,
 html,
 *,
@@ -370,4 +378,5 @@ html,
 .font-serif,
 .font-mono {
   font-family: 'Jost', sans-serif !important;
+  font-weight: 300 !important;
 }
