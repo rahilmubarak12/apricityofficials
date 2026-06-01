@@ -96,7 +96,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
   };
 
   return (
-    <div className="fixed bottom-6 left-6 z-40" ref={containerRef}>
+    <div className="fixed bottom-24 sm:bottom-6 left-6 z-40" ref={containerRef}>
       {/* Geolocation Loading / Selection Popup */}
       {isOpen && (
         <div className="absolute bottom-full left-0 mb-3 bg-white/95 backdrop-blur-lg border border-zinc-200/50 shadow-[0_10px_35px_rgba(0,0,0,0.12)] rounded-2xl p-1.5 flex flex-col gap-1 w-64 max-h-80 transform origin-bottom-left transition-all duration-300">
