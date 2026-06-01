@@ -46,7 +46,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const textColor = isLightNav ? 'text-[#1a1a1a]' : 'text-white';
   const textMuted = isLightNav ? 'text-zinc-500' : 'text-white/70';
-  const logoColor = isLightNav ? 'text-[#4d5b78]' : 'text-white';
+  const logoColor = 'text-[#3d4a6b]';
 
   return (
     <header className="fixed top-0 left-0 right-0 z-40">
@@ -61,10 +61,10 @@ export const Navbar: React.FC<NavbarProps> = ({
       <nav
         className={`transition-all duration-300 px-4 sm:px-6 lg:px-16 py-4 lg:py-5 ${navBg}`}
       >
-        <div className="relative flex items-center justify-between">
+        <div className="grid grid-cols-3 items-center">
           
           {/* LEFT: Mobile Menu Trigger (Mobile) / Navigation Links (Desktop) */}
-          <div className="flex items-center justify-start w-10 lg:w-auto">
+          <div className="flex items-center justify-start">
             {/* Hamburger Button for Mobile */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -168,7 +168,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* CENTER LOGO IMAGE + TEXT */}
           <Link
             to="/"
-            className="absolute left-1/2 -translate-x-1/2 flex flex-row items-center justify-center cursor-pointer select-none gap-2 sm:gap-4 no-underline"
+            className="flex flex-row items-center justify-center cursor-pointer select-none gap-3 sm:gap-4 no-underline"
             onClick={() => { onSelectCategory('all'); onSelectCollection('all'); setMobileMenuOpen(false); onGoHome?.(); }}
           >
             <img 
@@ -177,13 +177,13 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="h-10 w-10 sm:h-14 sm:w-14 lg:h-16 lg:w-16 object-contain transition-all" 
             />
             
-            <span className={`transition-all leading-none text-2xl sm:text-3xl lg:text-4xl ${logoColor}`} style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, letterSpacing: '0.15em' }}>
+            <span className={`transition-all leading-none text-2xl sm:text-3xl lg:text-4xl apricity-wordmark ${logoColor}`}>
               APRICITY
             </span>
           </Link>
 
           {/* RIGHT ICONS */}
-          <div className="flex items-center gap-3 sm:gap-6 lg:gap-8 justify-end text-sm sm:text-[17px] font-mono-street uppercase tracking-[0.1em] font-medium w-auto">
+          <div className="flex items-center gap-3 sm:gap-6 lg:gap-8 justify-end text-sm sm:text-[17px] font-mono-street uppercase tracking-[0.1em] font-medium">
             <button
               onClick={onOpenSearch}
               className={`transition-colors flex items-center gap-2 p-1 hover:opacity-80 ${textColor}`}
