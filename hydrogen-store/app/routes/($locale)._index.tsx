@@ -290,7 +290,7 @@ function mapSubCategory(tags: string[], title: string): Product['subCategory'] {
   const lowerTitle = title.toLowerCase();
   if (lowerTags.some((t) => t.includes('hoodie')) || lowerTitle.includes('hoodie')) return 'hoodie';
   if (lowerTags.some((t) => t.includes('sweatshirt')) || lowerTitle.includes('sweatshirt')) return 'sweatshirt';
-  if (lowerTags.some((t) => t.includes('shirt')) || lowerTitle.includes('shirt') || lowerTitle.includes('t-shirt') || lowerTitle.includes('tee')) return 't-shirt';
+  if (lowerTags.some((t) => t.includes('shirt') || t.includes('top')) || lowerTitle.includes('shirt') || lowerTitle.includes('t-shirt') || lowerTitle.includes('tee') || lowerTitle.includes('top')) return 't-shirt';
   if (lowerTags.some((t) => t.includes('jacket')) || lowerTitle.includes('jacket')) return 'jacket';
   return 't-shirt';
 }

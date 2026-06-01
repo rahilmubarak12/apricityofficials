@@ -86,7 +86,7 @@ export const ProductSection = React.memo(({
   const subcategoryLabels: Record<string, string> = {
     all: 'All',
     hoodie: 'Hoodies',
-    't-shirt': 'T-Shirts',
+    't-shirt': 'T-Shirts & Tops',
     shirt: 'Shirts',
     sweatshirt: 'Sweatshirts'
   };
