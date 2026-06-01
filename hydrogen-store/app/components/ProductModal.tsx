@@ -476,9 +476,33 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
     setTimeout(() => setIsAdded(false), 2000);
   };
 
-  // ------------------------------------------------------------------
-  // UI
-  // ------------------------------------------------------------------
+  // Hide Shopify Inbox chat widget + discount popup on mobile when modal is open
+  useEffect(() => {
+    const isMobile = window.innerWidth < 1024;
+    if (!isMobile) return;
+    const styleId = 'product-modal-hide-chat';
+    const existing = document.getElementById(styleId);
+    if (!existing) {
+      const style = document.createElement('style');
+      style.id = styleId;
+      style.textContent = `
+        @media (max-width: 1023px) {
+          shopify-chat,
+          #shopify-chat,
+          [id*="shopify-inbox"],
+          [class*="shopify-chat"],
+          iframe[src*="shopify"],
+          iframe[src*="inbox"] {
+            display: none !important;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+    return () => {
+      document.getElementById(styleId)?.remove();
+    };
+  }, []);
 
   return (
     <div 
