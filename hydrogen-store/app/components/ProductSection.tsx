@@ -88,8 +88,7 @@ export const ProductSection = React.memo(({
     hoodie: 'Hoodies',
     't-shirt': 'T-Shirts',
     shirt: 'Shirts',
-    sweatshirt: 'Sweatshirts',
-    'trouser-short': 'Trousers & Shorts'
+    sweatshirt: 'Sweatshirts'
   };
 
   return (
