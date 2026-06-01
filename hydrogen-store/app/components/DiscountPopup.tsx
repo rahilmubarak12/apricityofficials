@@ -25,7 +25,7 @@ export const DiscountPopup: React.FC<DiscountPopupProps> = ({ hideOnMobile = fal
       {/* Sticky bottom bar — hidden on mobile when cart is open */}
       <div
         onClick={() => setVisible(true)}
-        className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[9998] bg-white text-[#1a1a1a] shadow-2xl rounded-2xl py-5 px-10 flex items-center justify-center gap-3 cursor-pointer hover:shadow-xl transition-all w-auto max-w-xs${hideOnMobile ? ' hidden sm:flex' : ''}`}
+        className={`fixed bottom-6 left-4 right-20 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-[9998] bg-white text-[#1a1a1a] shadow-2xl rounded-2xl py-4 px-6 flex items-center justify-center gap-3 cursor-pointer hover:shadow-xl transition-all sm:w-auto sm:max-w-xs${hideOnMobile ? ' hidden sm:flex' : ''}`}
       >
         <span className="font-mono-street text-[11px] uppercase tracking-[0.2em] whitespace-nowrap">
           Want 15% off? Tap here
