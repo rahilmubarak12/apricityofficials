@@ -643,6 +643,22 @@ export default function Homepage() {
   const [selectedCategory, setSelectedCategory] = useState<Category | 'all'>('all');
   const [selectedCollection, setSelectedCollection] = useState<Collection | 'all'>('all');
   const [isCartOpen, setIsCartOpen] = useState(false);
+
+  // Hide Shopify chat widget on mobile when cart is open
+  useEffect(() => {
+    const styleId = 'hide-chat-on-mobile';
+    let el = document.getElementById(styleId);
+    if (isCartOpen) {
+      if (!el) {
+        el = document.createElement('style');
+        el.id = styleId;
+        el.textContent = '@media (max-width: 639px) { #shopify-chat, shopify-chat-button, [id*="shopify-inbox"], [class*="shopify-chat"], iframe[src*="shopify"] { display: none !important; } }';
+        document.head.appendChild(el);
+      }
+    } else {
+      el?.remove();
+    }
+  }, [isCartOpen]);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [activeProductModal, setActiveProductModal] = useState<Product | null>(null);
   const [showRefundPolicy, setShowRefundPolicy] = useState(false);
@@ -951,7 +967,7 @@ export default function Homepage() {
           formatPrice={formatPrice}
         />
         <CountrySelector selectedCountry={selectedCountry} onSelectCountry={handleSelectCountry} />
-        <DiscountPopup />
+        <DiscountPopup hideOnMobile={isCartOpen} />
       </div>
     </QueryClientProvider>
   );

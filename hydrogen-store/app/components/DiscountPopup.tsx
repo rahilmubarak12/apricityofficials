@@ -3,7 +3,11 @@ import { X } from 'lucide-react';
 
 const STORAGE_KEY = 'apricity_discount_popup_shown';
 
-export const DiscountPopup: React.FC = () => {
+interface DiscountPopupProps {
+  hideOnMobile?: boolean;
+}
+
+export const DiscountPopup: React.FC<DiscountPopupProps> = ({ hideOnMobile = false }) => {
   const [visible, setVisible] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -18,10 +22,10 @@ export const DiscountPopup: React.FC = () => {
 
   return (
     <>
-      {/* Sticky bottom bar — always visible */}
+      {/* Sticky bottom bar — hidden on mobile when cart is open */}
       <div
         onClick={() => setVisible(true)}
-        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[9998] bg-white text-[#1a1a1a] shadow-2xl rounded-2xl py-5 px-10 flex items-center justify-center gap-3 cursor-pointer hover:shadow-xl transition-all w-auto max-w-xs"
+        className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[9998] bg-white text-[#1a1a1a] shadow-2xl rounded-2xl py-5 px-10 flex items-center justify-center gap-3 cursor-pointer hover:shadow-xl transition-all w-auto max-w-xs${hideOnMobile ? ' hidden sm:flex' : ''}`}
       >
         <span className="font-mono-street text-[11px] uppercase tracking-[0.2em] whitespace-nowrap">
           Want 15% off? Tap here
