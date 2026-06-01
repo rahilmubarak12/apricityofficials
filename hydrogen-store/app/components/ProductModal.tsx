@@ -476,6 +476,15 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
     setTimeout(() => setIsAdded(false), 2000);
   };
 
+  const handleQuickBuy = () => {
+    if (!canAddToCart) return;
+    const variantId = effectiveVariant?.id ?? '';
+    // Shopify variant IDs are often in the form "gid://shopify/ProductVariant/123"
+    const numericId = variantId.includes('/') ? variantId.split('/').pop() : variantId;
+    const checkoutUrl = `https://${window.location.host}/cart/${numericId}:${quantity}`;
+    window.location.href = checkoutUrl;
+  };
+
   // Hide Shopify Inbox chat widget + discount popup on mobile when modal is open
   useEffect(() => {
     const isMobile = window.innerWidth < 1024;
@@ -776,31 +785,49 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
               </div>
             )}
 
-            <button
-              onClick={handleAdd}
-              disabled={!canAddToCart}
-              className={`
-                w-full py-4 rounded-xl text-sm font-semibold tracking-[0.1em] uppercase
-                flex items-center justify-center gap-2.5
-                transition-all duration-300
-                ${canAddToCart
-                  ? isAdded
-                    ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200'
-                    : 'bg-zinc-900 text-white hover:bg-zinc-700 shadow-lg shadow-zinc-200 hover:shadow-xl hover:scale-[1.01] active:scale-[0.99]'
-                  : 'bg-zinc-100 text-zinc-400 cursor-not-allowed'
-                }
-              `}
-            >
-              {isCompletelyOutOfStock ? (
-                <><AlertCircle size={15} /> Out of Stock</>
-              ) : selectedVariantOutOfStock ? (
-                <><AlertCircle size={15} /> Unavailable</>
-              ) : isAdded ? (
-                <><span className="text-base leading-none">✓</span> Added to Cart</>
-              ) : (
-                <><ShoppingBag size={15} /> Add to Cart</>
-              )}
-            </button>
+            <div className="flex gap-2.5">
+              <button
+                onClick={handleAdd}
+                disabled={!canAddToCart}
+                className={`
+                  flex-1 py-4 rounded-xl text-sm font-semibold tracking-[0.1em] uppercase
+                  flex items-center justify-center gap-2.5
+                  transition-all duration-300
+                  ${canAddToCart
+                    ? isAdded
+                      ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200'
+                      : 'bg-zinc-900 text-white hover:bg-zinc-700 shadow-lg shadow-zinc-200 hover:shadow-xl hover:scale-[1.01] active:scale-[0.99]'
+                    : 'bg-zinc-100 text-zinc-400 cursor-not-allowed'
+                  }
+                `}
+              >
+                {isCompletelyOutOfStock ? (
+                  <><AlertCircle size={15} /> Out of Stock</>
+                ) : selectedVariantOutOfStock ? (
+                  <><AlertCircle size={15} /> Unavailable</>
+                ) : isAdded ? (
+                  <><span className="text-base leading-none">✓</span> Added to Cart</>
+                ) : (
+                  <><ShoppingBag size={15} /> Add to Cart</>
+                )}
+              </button>
+
+              <button
+                onClick={handleQuickBuy}
+                disabled={!canAddToCart}
+                className={`
+                  flex-1 py-4 rounded-xl text-sm font-semibold tracking-[0.1em] uppercase
+                  flex items-center justify-center gap-2.5
+                  transition-all duration-300
+                  ${canAddToCart
+                    ? 'bg-white text-zinc-900 border border-zinc-300 hover:border-zinc-900 hover:bg-zinc-50 shadow-sm hover:shadow-md hover:scale-[1.01] active:scale-[0.99]'
+                    : 'bg-zinc-100 text-zinc-400 cursor-not-allowed border border-transparent'
+                  }
+                `}
+              >
+                Quick Buy
+              </button>
+            </div>
           </div>
 
         </div>
