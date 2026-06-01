@@ -124,7 +124,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               <a
                 href="#" onClick={(e) => { e.preventDefault(); onOpenTheRule(); }}
-                className={`pb-1 relative transition-colors nav-link-hover ${textMuted} hover:text-current no-underline`}
+                className={`pb-1 relative transition-colors nav-link-hover ${textMuted} hover:text-current no-underline normal-case`}
               >
                 The Rule
               </a>
@@ -241,7 +241,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <a
               href="#" onClick={(e) => { e.preventDefault(); onOpenTheRule(); }}
-              className="py-2 transition-colors text-zinc-400 hover:text-white no-underline"
+              className="py-2 transition-colors text-zinc-400 hover:text-white no-underline normal-case"
               onClick={() => setMobileMenuOpen(false)}
             >
               The Rule
