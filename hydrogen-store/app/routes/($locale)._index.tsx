@@ -967,7 +967,7 @@ export default function Homepage() {
           formatPrice={formatPrice}
         />
         <CountrySelector selectedCountry={selectedCountry} onSelectCountry={handleSelectCountry} />
-        <DiscountPopup hideOnMobile={isCartOpen} />
+        <DiscountPopup hideOnMobile={isCartOpen || !!activeProductModal} />
       </div>
     </QueryClientProvider>
   );
