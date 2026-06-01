@@ -519,7 +519,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
       onClick={onClose}
     >
       <div
-        className="relative bg-white w-full max-w-5xl h-[92dvh] sm:h-auto sm:max-h-[90vh] flex flex-col lg:flex-row overflow-hidden rounded-t-3xl sm:rounded-3xl shadow-2xl"
+        className="relative bg-white w-full max-w-5xl h-[92dvh] sm:h-auto sm:max-h-[90vh] flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden rounded-t-3xl sm:rounded-3xl shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
 
@@ -532,9 +532,9 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
         </button>
 
         {/* ── LEFT: Images ── */}
-        <div className="w-full lg:w-1/2 bg-zinc-50 p-6 flex flex-col gap-3 overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
-          <div className="aspect-[3/4] bg-white rounded-2xl overflow-hidden">
-            <img src={selectedImage} alt={product.name} className="w-full h-full object-cover transition-transform duration-700 ease-out hover:scale-110 cursor-zoom-in" />
+        <div className="w-full lg:w-1/2 bg-zinc-50 p-6 flex flex-col gap-3 lg:overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
+          <div className="w-full bg-white rounded-2xl overflow-hidden">
+            <img src={selectedImage} alt={product.name} className="w-full h-auto object-contain transition-transform duration-700 ease-out hover:scale-110 cursor-zoom-in" />
           </div>
           {images.length > 1 && (
             <div className="flex gap-2 overflow-x-auto pb-1">
@@ -554,10 +554,10 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
         </div>
 
         {/* ── RIGHT: scrollable content + sticky CTA ── */}
-        <div className="w-full lg:w-1/2 flex flex-col overflow-hidden">
+        <div className="w-full lg:w-1/2 flex flex-col lg:overflow-hidden">
 
           {/* Scrollable content */}
-          <div className="flex-1 overflow-y-auto px-8 py-10 gap-6 flex flex-col" style={{ WebkitOverflowScrolling: 'touch' }}>
+          <div className="flex-1 lg:overflow-y-auto px-8 py-10 gap-6 flex flex-col" style={{ WebkitOverflowScrolling: 'touch' }}>
 
           {/* Title + price */}
           <div className="flex flex-col gap-2">
