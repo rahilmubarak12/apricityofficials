@@ -515,12 +515,11 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
 
   return (
     <div 
-      className="fixed inset-0 z-50 overflow-y-auto bg-[#f6f5f2]/80 backdrop-blur-md flex items-start lg:items-center justify-center p-4 md:p-8"
+      className="fixed inset-0 z-50 overflow-hidden bg-[#f6f5f2]/80 backdrop-blur-md flex items-end sm:items-center justify-center sm:p-4 md:p-8"
       onClick={onClose}
-      style={{ WebkitOverflowScrolling: 'touch' }}
     >
-      <div 
-        className="relative bg-white w-full max-w-5xl h-auto lg:h-[90vh] flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden rounded-3xl shadow-2xl my-4 lg:my-0"
+      <div
+        className="relative bg-white w-full max-w-5xl h-[92dvh] sm:h-auto sm:max-h-[90vh] flex flex-col lg:flex-row overflow-hidden rounded-t-3xl sm:rounded-3xl shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
 
@@ -533,7 +532,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
         </button>
 
         {/* ── LEFT: Images ── */}
-        <div className="w-full lg:w-1/2 bg-zinc-50 p-6 flex flex-col gap-3 overflow-visible lg:overflow-y-auto">
+        <div className="w-full lg:w-1/2 bg-zinc-50 p-6 flex flex-col gap-3 overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
           <div className="aspect-[3/4] bg-white rounded-2xl overflow-hidden">
             <img src={selectedImage} alt={product.name} className="w-full h-full object-cover transition-transform duration-700 ease-out hover:scale-110 cursor-zoom-in" />
           </div>
@@ -554,8 +553,11 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
           )}
         </div>
 
-        {/* ── RIGHT: centred layout ── */}
-        <div className="w-full lg:w-1/2 flex flex-col justify-start px-8 py-10 gap-6 lg:overflow-y-auto">
+        {/* ── RIGHT: scrollable content + sticky CTA ── */}
+        <div className="w-full lg:w-1/2 flex flex-col overflow-hidden">
+
+          {/* Scrollable content */}
+          <div className="flex-1 overflow-y-auto px-8 py-10 gap-6 flex flex-col" style={{ WebkitOverflowScrolling: 'touch' }}>
 
           {/* Title + price */}
           <div className="flex flex-col gap-2">
@@ -750,8 +752,10 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
             ))}
           </div>
 
-          {/* ── CTA: Quantity + Add to Cart ── */}
-          <div className="mt-6 flex flex-col gap-3">
+          </div>{/* end scrollable content */}
+
+          {/* ── STICKY CTA ── */}
+          <div className="flex-shrink-0 border-t border-zinc-100 bg-white px-6 py-4 flex flex-col gap-3">
             <div className="flex items-center justify-center text-[10px] text-zinc-400 tracking-wide uppercase">
               <span>Secure checkout</span>
             </div>
