@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Product, Category, Collection } from '../lib/types';
 
 interface ProductSectionProps {
@@ -39,6 +39,14 @@ export const ProductSection = React.memo(({
   formatPriceCompact
 }: ProductSectionProps) => {
   const [activeSubcategory, setActiveSubcategory] = useState<string>('all');
+  const [sizePopupProductId, setSizePopupProductId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!sizePopupProductId) return;
+    const close = () => setSizePopupProductId(null);
+    document.addEventListener('click', close);
+    return () => document.removeEventListener('click', close);
+  }, [sizePopupProductId]);
 
   const filtered = useMemo(() => {
     return products.filter((p) => {
@@ -205,7 +213,7 @@ export const ProductSection = React.memo(({
             return (
               <div
                 key={stableKey}
-                className="group flex flex-col cursor-pointer"
+                className="group flex flex-col cursor-pointer relative"
                 onClick={() => onSelectProduct(product)}
               >
 
@@ -281,9 +289,58 @@ export const ProductSection = React.memo(({
                     {product.category}
                   </span>
 
-                  <h3 className="font-heading font-semibold text-[14px] sm:text-[15px] text-[#1a1a1a] group-hover:text-zinc-500 transition-colors leading-snug">
-                    {product.name}
-                  </h3>
+                  <div className="flex items-center justify-between gap-2">
+                    <h3 className="font-heading font-semibold text-[14px] sm:text-[15px] text-[#1a1a1a] group-hover:text-zinc-500 transition-colors leading-snug flex-1 min-w-0 truncate">
+                      {product.name}
+                    </h3>
+                    {!isOutOfStock && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSizePopupProductId(sizePopupProductId === stableKey ? null : stableKey);
+                        }}
+                        className="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-full border border-zinc-200 bg-white hover:bg-zinc-950 hover:border-zinc-950 hover:text-white text-zinc-600 transition-all duration-200 shadow-sm"
+                        title="Quick add to cart"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+                        </svg>
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Size picker popup */}
+                  {sizePopupProductId === stableKey && (
+                    <div
+                      className="absolute z-30 bg-white border border-zinc-200 rounded-xl shadow-xl p-3 left-0 right-0 mx-2"
+                      style={{ bottom: 'calc(100% + 8px)' }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <p className="text-[9px] font-mono-street uppercase tracking-widest text-zinc-400 text-center mb-2">Select Size</p>
+                      <div className="flex flex-wrap gap-1.5 justify-center">
+                        {product.variants.map((v) => {
+                          const inStock = v.stock > 0;
+                          return (
+                            <button
+                              key={v.size}
+                              disabled={!inStock}
+                              onClick={() => {
+                                onQuickAdd(product, v.size);
+                                setSizePopupProductId(null);
+                              }}
+                              className={`px-3 py-1.5 text-[10px] font-bold rounded uppercase tracking-wider transition ${
+                                inStock
+                                  ? 'bg-zinc-950 text-white hover:bg-zinc-700 shadow active:scale-95'
+                                  : 'bg-zinc-100 text-zinc-300 cursor-not-allowed line-through'
+                              }`}
+                            >
+                              {v.size}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
 
                   <div className="flex items-center justify-between mt-1 pt-2 border-t border-zinc-100">
 
