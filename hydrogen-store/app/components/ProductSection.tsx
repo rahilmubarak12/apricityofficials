@@ -39,17 +39,14 @@ export const ProductSection = React.memo(({
   formatPriceCompact
 }: ProductSectionProps) => {
   const [activeSubcategory, setActiveSubcategory] = useState<string>('all');
-  const [sizeTrayProduct, setSizeTrayProduct] = useState<Product | null>(null);
+  const [sizePopupProductId, setSizePopupProductId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!sizeTrayProduct) return;
-    const close = (e: MouseEvent) => {
-      const tray = document.getElementById('size-tray');
-      if (tray && !tray.contains(e.target as Node)) setSizeTrayProduct(null);
-    };
+    if (!sizePopupProductId) return;
+    const close = () => setSizePopupProductId(null);
     document.addEventListener('click', close);
     return () => document.removeEventListener('click', close);
-  }, [sizeTrayProduct]);
+  }, [sizePopupProductId]);
 
   const filtered = useMemo(() => {
     return products.filter((p) => {
@@ -300,7 +297,7 @@ export const ProductSection = React.memo(({
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          setSizeTrayProduct(sizeTrayProduct?.id === product.id ? null : product);
+                          setSizePopupProductId(sizePopupProductId === stableKey ? null : stableKey);
                         }}
                         className="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-full border border-zinc-200 bg-white hover:bg-zinc-950 hover:border-zinc-950 hover:text-white text-zinc-600 transition-all duration-200 shadow-sm"
                         title="Quick add to cart"
@@ -311,6 +308,39 @@ export const ProductSection = React.memo(({
                       </button>
                     )}
                   </div>
+
+                  {/* Size picker popup */}
+                  {sizePopupProductId === stableKey && (
+                    <div
+                      className="absolute z-30 bg-white border border-zinc-200 rounded-xl shadow-xl p-3 left-0 right-0 mx-2"
+                      style={{ bottom: 'calc(100% + 8px)' }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <p className="text-[9px] font-mono-street uppercase tracking-widest text-zinc-400 text-center mb-2">Select Size</p>
+                      <div className="flex flex-nowrap gap-1.5 justify-center overflow-x-auto scrollbar-none">
+                        {product.variants.map((v) => {
+                          const inStock = v.stock > 0;
+                          return (
+                            <button
+                              key={v.size}
+                              disabled={!inStock}
+                              onClick={() => {
+                                onQuickAdd(product, v.size);
+                                setSizePopupProductId(null);
+                              }}
+                              className={`px-3 py-1.5 text-[10px] font-bold rounded uppercase tracking-wider transition ${
+                                inStock
+                                  ? 'bg-zinc-950 text-white hover:bg-zinc-700 shadow active:scale-95'
+                                  : 'bg-zinc-100 text-zinc-300 cursor-not-allowed line-through'
+                              }`}
+                            >
+                              {v.size}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
 
                   <div className="flex items-center justify-between mt-1 pt-2 border-t border-zinc-100">
 
@@ -410,53 +440,6 @@ export const ProductSection = React.memo(({
               </div>
             );
           })}
-        </div>
-      )}
-
-      {/* Fixed Bottom Size Tray */}
-      {sizeTrayProduct && (
-        <div
-          id="size-tray"
-          className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-zinc-200 shadow-2xl px-6 py-4 flex items-center gap-4"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="flex flex-col min-w-0 mr-2">
-            <span className="text-[9px] font-mono-street uppercase tracking-widest text-zinc-400">Quick Add</span>
-            <span className="font-heading font-semibold text-[13px] text-[#1a1a1a] truncate max-w-[120px] sm:max-w-[200px]">
-              {sizeTrayProduct.name}
-            </span>
-          </div>
-          <div className="flex items-center gap-2 flex-nowrap overflow-x-auto scrollbar-none flex-1">
-            {sizeTrayProduct.variants.map((v) => {
-              const inStock = v.stock > 0;
-              return (
-                <button
-                  key={v.size}
-                  disabled={!inStock}
-                  onClick={() => {
-                    onQuickAdd(sizeTrayProduct, v.size);
-                    setSizeTrayProduct(null);
-                  }}
-                  className={`flex-shrink-0 px-4 py-2 text-[11px] font-bold rounded uppercase tracking-wider transition ${
-                    inStock
-                      ? 'bg-zinc-950 text-white hover:bg-zinc-700 shadow active:scale-95'
-                      : 'bg-zinc-100 text-zinc-300 cursor-not-allowed line-through'
-                  }`}
-                >
-                  {v.size}
-                </button>
-              );
-            })}
-          </div>
-          <button
-            onClick={() => setSizeTrayProduct(null)}
-            className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full border border-zinc-200 text-zinc-400 hover:text-zinc-900 hover:border-zinc-400 transition ml-2"
-            title="Close"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
-          </button>
         </div>
       )}
 
