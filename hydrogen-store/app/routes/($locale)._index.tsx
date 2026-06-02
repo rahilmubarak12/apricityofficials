@@ -348,12 +348,14 @@ function mapShopifyProduct(node: any, pagesMap: Record<string, { title: string; 
     sizeChartHtml = pagesMap[metafieldHandle].body;
   } else {
     const chartHandle = resolveSizeChartHandle(handle, tags, node.title);
+    console.log('[SIZE CHART DEBUG]', { handle, tags, chartHandle, pagesMapKeys: Object.keys(pagesMap) });
     if (chartHandle) {
       const dynamicChart = pagesMap[chartHandle];
       if (dynamicChart) {
         sizeChartHtml = dynamicChart.body;
       } else {
         const staticChart = (shopifySizeCharts as Record<string, any>)[chartHandle];
+        console.log('[SIZE CHART DEBUG] staticChart found:', !!staticChart);
         if (staticChart) sizeChartHtml = staticChart.body;
       }
     }
