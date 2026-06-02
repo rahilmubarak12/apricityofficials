@@ -29,7 +29,7 @@ export const CollectionsGrid: React.FC<CollectionsGridProps> = ({
           className="group relative h-[460px] overflow-hidden cursor-pointer"
         >
           <img
-            src="/images/man.jpg"
+            src="/images/man-v2.jpg"
             alt="Men"
             className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
           />
@@ -45,7 +45,7 @@ export const CollectionsGrid: React.FC<CollectionsGridProps> = ({
           className="group relative h-[460px] overflow-hidden cursor-pointer"
         >
           <img
-            src="/images/woman.jpg"
+            src="/images/woman-v2.jpg"
             alt="Women"
             className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
           />
@@ -61,7 +61,7 @@ export const CollectionsGrid: React.FC<CollectionsGridProps> = ({
           className="group relative h-[460px] overflow-hidden cursor-pointer"
         >
           <img
-            src="/images/both.jpg"
+            src="/images/both-v2.jpg"
             alt="New Drops"
             className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
           />
@@ -77,7 +77,7 @@ export const CollectionsGrid: React.FC<CollectionsGridProps> = ({
           className="group relative h-[460px] overflow-hidden cursor-pointer"
         >
           <img
-            src="/images/sale.jpg"
+            src="/images/sale-v2.jpg"
             alt="Sale Collection"
             className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
           />
