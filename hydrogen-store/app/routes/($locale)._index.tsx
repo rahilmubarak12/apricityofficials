@@ -621,7 +621,7 @@ export default function Homepage() {
     return rawProducts.map((node: any) => mapShopifyProduct(node, (pagesMap as Record<string, { title: string; body: string }>) ?? {}));
   }, [rawProducts, pagesMap]);
 
-  const [products] = useState<any[]>(mappedProducts);
+  const products = mappedProducts;
   const [cart, setCart] = useState<CartItem[]>([]);
   const [cartLoaded, setCartLoaded] = useState(false);
 
