@@ -88,6 +88,14 @@ export const ProductSection = React.memo(({
       }
 
       return true;
+    }).sort((a, b) => {
+      const winterTypes = ['hoodie', 'sweatshirt'];
+      const aIsWinter = winterTypes.includes((a.subCategory || '').toLowerCase()) ||
+        (a as any).tags?.some((t: string) => winterTypes.includes(t.toLowerCase()));
+      const bIsWinter = winterTypes.includes((b.subCategory || '').toLowerCase()) ||
+        (b as any).tags?.some((t: string) => winterTypes.includes(t.toLowerCase()));
+      if (aIsWinter === bIsWinter) return 0;
+      return aIsWinter ? 1 : -1;
     });
   }, [products, selectedCategory, selectedCollection, activeSubcategory]);
 
@@ -317,7 +325,7 @@ export const ProductSection = React.memo(({
                       onClick={(e) => e.stopPropagation()}
                     >
                       <p className="text-[9px] font-mono-street uppercase tracking-widest text-zinc-400 text-center mb-2">Select Size</p>
-                      <div className="flex flex-nowrap gap-1.5 justify-center overflow-x-auto scrollbar-none">
+                      <div className="flex flex-wrap gap-1.5 justify-center">
                         {product.variants.map((v) => {
                           const inStock = v.stock > 0;
                           return (
