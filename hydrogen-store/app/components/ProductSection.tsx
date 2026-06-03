@@ -79,12 +79,17 @@ export const ProductSection = React.memo(({
       }
 
       if (activeSubcategory !== 'all') {
-        const matchesSubcategoryProperty = p.subCategory === activeSubcategory;
-        // FIX 5: p.tags is now preserved on the product, so this filter actually works
-        const matchesShopifyTags = (p as any).tags?.some(
-          (tag: string) => tag.toLowerCase() === activeSubcategory.toLowerCase()
-        );
-        if (!matchesSubcategoryProperty && !matchesShopifyTags) return false;
+        if (activeSubcategory === 'summer') {
+          const sub = p.subCategory;
+          if (sub === 'hoodie' || sub === 'sweatshirt') return false;
+        } else {
+          const matchesSubcategoryProperty = p.subCategory === activeSubcategory;
+          // FIX 5: p.tags is now preserved on the product, so this filter actually works
+          const matchesShopifyTags = (p as any).tags?.some(
+            (tag: string) => tag.toLowerCase() === activeSubcategory.toLowerCase()
+          );
+          if (!matchesSubcategoryProperty && !matchesShopifyTags) return false;
+        }
       }
 
       return true;
@@ -93,6 +98,7 @@ export const ProductSection = React.memo(({
 
   const subcategoryLabels: Record<string, string> = {
     all: 'All',
+    summer: 'Summer Collection',
     hoodie: 'Hoodies',
     't-shirt': 'T-Shirts & Tops',
     shirt: 'Sets',
@@ -405,6 +411,8 @@ export const ProductSection = React.memo(({
                             green: '#16a34a', olive: '#6b7c41', sage: '#7c9e6e',
                             mint: '#a7f3d0', teal: '#0d9488', forest: '#228b22',
                             emerald: '#059669', hunter: '#355e3b', army: '#4b5320',
+                            // Others
+                            white: '#f5f5f5',
                           };
                           // Try exact key match first, then try CSS named color via a test element
                           if (map[key]) return map[key];
