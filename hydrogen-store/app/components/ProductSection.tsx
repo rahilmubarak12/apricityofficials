@@ -93,6 +93,12 @@ export const ProductSection = React.memo(({
       }
 
       return true;
+    }).sort((a, b) => {
+      const winterTypes = ['hoodie', 'sweatshirt'];
+      const aIsWinter = winterTypes.includes((a.subCategory || '').toLowerCase());
+      const bIsWinter = winterTypes.includes((b.subCategory || '').toLowerCase());
+      if (aIsWinter === bIsWinter) return 0;
+      return aIsWinter ? 1 : -1;
     });
   }, [products, selectedCategory, selectedCollection, activeSubcategory]);
 
