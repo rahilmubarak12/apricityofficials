@@ -239,13 +239,12 @@ export const Navbar: React.FC<NavbarProps> = ({
               Sale
             </button>
 
-            <a
-              href="#" onClick={(e) => { e.preventDefault(); onOpenTheRule(); }}
+            <button
+              onClick={(e) => { e.preventDefault(); onOpenTheRule(); setMobileMenuOpen(false); }}
               className="py-2 transition-colors text-zinc-400 hover:text-white no-underline normal-case"
-              onClick={() => setMobileMenuOpen(false)}
             >
               The Rule
-            </a>
+            </button>
 
             {/* Mobile Contact Info */}
             <div className="pt-6 border-t border-zinc-800 flex flex-col items-center gap-3">
