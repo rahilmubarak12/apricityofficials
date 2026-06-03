@@ -29,8 +29,7 @@ export const TheRule: React.FC<TheRuleProps> = ({ onBack }) => {
             <img
               src="/images/rule.png"
               alt="The Three-Year Rule"
-              className="w-full object-cover rounded-sm"
-              style={{ height: '75vh', minHeight: '500px' }}
+              className="w-full object-contain rounded-sm"
             />
           </div>
 
