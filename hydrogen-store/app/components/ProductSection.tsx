@@ -88,14 +88,6 @@ export const ProductSection = React.memo(({
       }
 
       return true;
-    }).sort((a, b) => {
-      const winterTypes = ['hoodie', 'sweatshirt'];
-      const aIsWinter = winterTypes.includes((a.subCategory || '').toLowerCase()) ||
-        (a as any).tags?.some((t: string) => winterTypes.includes(t.toLowerCase()));
-      const bIsWinter = winterTypes.includes((b.subCategory || '').toLowerCase()) ||
-        (b as any).tags?.some((t: string) => winterTypes.includes(t.toLowerCase()));
-      if (aIsWinter === bIsWinter) return 0;
-      return aIsWinter ? 1 : -1;
     });
   }, [products, selectedCategory, selectedCollection, activeSubcategory]);
 
@@ -413,8 +405,6 @@ export const ProductSection = React.memo(({
                             green: '#16a34a', olive: '#6b7c41', sage: '#7c9e6e',
                             mint: '#a7f3d0', teal: '#0d9488', forest: '#228b22',
                             emerald: '#059669', hunter: '#355e3b', army: '#4b5320',
-                            // Others
-                            white: '#f5f5f5',
                           };
                           // Try exact key match first, then try CSS named color via a test element
                           if (map[key]) return map[key];
