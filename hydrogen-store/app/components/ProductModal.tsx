@@ -142,8 +142,8 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
 
     const descHtml = (product as any).descriptionHtml;
     const descFeaturesHtml = scraped?.descriptionFeatures || (product as any).descriptionFeaturesHtml;
-    const attentionHtml = scraped?.attentionStyleSeekers || (product as any).attentionSeekersMetafield;
-    const sizeFitHtml = scraped?.sizeFit || (product as any).sizeFitMetafield;
+    const attentionHtml = (product as any).attentionSeekersMetafield || scraped?.attentionStyleSeekers;
+    const sizeFitHtml = (product as any).sizeFitMetafield || scraped?.sizeFit;
     const careHtml = scraped?.takeCareOfMe || (product as any).careMetafield;
 
     // ── Audience / Attention Style Seekers ──
